@@ -1,45 +1,39 @@
-# Alpha Labs visual system and source notes
+# Alpha Labs mirror design and source record
 
-## Baseline direction
+## Approved reference
 
-The first release intentionally mirrors the current Alpha Labs visual language: a compact 960-pixel centered page, blue patterned surround, white header with the existing branded header artwork, deep-blue navigation with a gold rule, rotating laboratory imagery, a two-column content/sidebar layout and a muted blue locations band. This recognizable baseline makes live meeting changes easy to see.
+The current public site at `https://www.alpha-labs.com/` is the sole baseline reference. The staged release preserves its WordPress Genesis theme, header, navigation, slider, content/sidebar layouts, typography, colors, imagery, responsive rules and route structure rather than introducing a new visual system before the owner meeting.
 
-## Role treatments
+## Shared component roles
 
-| Role | Treatment |
+| Role | Reference treatment |
 | --- | --- |
-| Primary title | Source Sans Pro/Arial, 30px, semibold, Alpha blue |
-| Section title | Source Sans Pro/Arial, 25px, semibold, Alpha blue |
-| Body | Source Sans Pro/Arial, 16px, 1.55 line height, charcoal |
-| Navigation | Deep-blue bar, white semibold text, gold active/hover state, 44px minimum target |
-| Word link | Deep-blue text, gold underline, visible gold focus outline |
-| Card | Flat white or light gray surface, restrained gray border or blue top rule |
-| Graphics | Current Alpha Labs header and laboratory images, original aspect ratios retained |
-| Header | Existing branded artwork on white with separate Client Data Access control |
+| Header | Current Alpha Labs header artwork and Client Data Access control |
+| Navigation | Current Genesis primary navigation and active-page behavior |
+| Primary and section titles | Current theme typography, weights, sizes and Alpha blue |
+| Body and word links | Current Source Sans Pro theme styles and states |
+| Cards/sidebar | Current widgets, borders, spacing and image treatments |
+| Slider | Current Soliloquy markup, imagery and behavior |
+| Footer and locations | Current live-site widgets, contact details and copyright |
 
 ## Route-by-component matrix
 
-| Route | Header | Navigation | Slider | Main content | Sidebar | Locations | Footer |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `/` | Shared | Shared | Shared | Home, services, company, regulatory, forms, careers and contact sections | Shared | Shared | Shared |
+Every route in `mirror-manifest.json` uses the public site's own shared header, navigation and footer markup. Page-specific content, sidebar presence and active navigation state are retained from the corresponding live route. The injected `styles.css` is one site-wide override layer for owner-requested meeting changes.
 
-## Responsive behavior
+## Responsive targets
 
-- Desktop reference: 1440px viewport with the 960px centered source-site geometry.
-- Phone reference: 390px viewport with wrapping navigation, one-column content and two-to-one-column locations.
-- All interactive targets are at least 44px high and preserve visible keyboard focus.
+- Desktop acceptance: 1440 by 900 pixels.
+- Phone acceptance: 390 by 844 pixels.
+- No unintended horizontal overflow, broken visual assets, console errors, heading skips or unnamed controls.
 
-## Public sources and asset provenance
+## Provenance
 
-- Current public site, navigation, company copy and locations: `https://www.alpha-labs.com/`
-- Services: `https://www.alpha-labs.com/services-listing`
-- Company mission and certifications: `https://www.alpha-labs.com/company`
-- Contact: `https://www.alpha-labs.com/contact-us-alpha-analytical-laboratories-inc`
-- Header, slider, WaterTrax, flask, Aquafornia, payment and favicon assets: current public Alpha Labs WordPress media/theme paths, downloaded 2026-09-02.
+- Page and post inventory: the current `wp-sitemap-posts-page-1.xml` and `wp-sitemap-posts-post-1.xml` files.
+- HTML, theme CSS/JavaScript, media and public facts: `https://www.alpha-labs.com/`, fetched 2026-09-02.
+- No private Alpha Labs system, account or data source is used.
 
-## Deliberate exclusions
+## Deliberate exceptions
 
-- No working contact form, CAPTCHA, analytics, WordPress scripts or data collection.
-- No claim that Alpha Labs approved this staged site.
-- No changes to Alpha Labs production systems.
-- No credentials, prices, availability or regulatory claims beyond the current public source.
+- Every mirrored route adds `noindex, nofollow`.
+- Form submission is disabled on the staged copy to prevent production data entry.
+- Internal HTML page navigation remains inside the GitHub Pages mirror. Client Data Access, PDFs and other non-page resources continue to use their current public destinations.

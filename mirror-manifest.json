@@ -1,0 +1,177 @@
+[
+  {
+    "Source": "https://www.alpha-labs.com/",
+    "Route": "/",
+    "Output": "index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/about-us",
+    "Route": "/about-us",
+    "Output": "about-us\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/algae-speciation.html",
+    "Route": "/algae-speciation.html",
+    "Output": "algae-speciation.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/alpha-now-analyzes-water-samples-for-1-2-3-trichloropropane.html",
+    "Route": "/alpha-now-analyzes-water-samples-for-1-2-3-trichloropropane.html",
+    "Output": "alpha-now-analyzes-water-samples-for-1-2-3-trichloropropane.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/analyses-of-epa-8315-formaldehyde-in-aqueous-matrices.html",
+    "Route": "/analyses-of-epa-8315-formaldehyde-in-aqueous-matrices.html",
+    "Output": "analyses-of-epa-8315-formaldehyde-in-aqueous-matrices.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/block-content-examples",
+    "Route": "/block-content-examples",
+    "Output": "block-content-examples\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/bottled-water-vs-tap-water-what-you-need-to-know.html",
+    "Route": "/bottled-water-vs-tap-water-what-you-need-to-know.html",
+    "Output": "bottled-water-vs-tap-water-what-you-need-to-know.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/california-proposes-drinking-water-standard-for-hexavalent-chromium.html",
+    "Route": "/california-proposes-drinking-water-standard-for-hexavalent-chromium.html",
+    "Output": "california-proposes-drinking-water-standard-for-hexavalent-chromium.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/careers",
+    "Route": "/careers",
+    "Output": "careers\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/client-data-access",
+    "Route": "/client-data-access",
+    "Output": "client-data-access\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/company",
+    "Route": "/company",
+    "Output": "company\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/contact-us",
+    "Route": "/contact-us",
+    "Output": "contact-us\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/contact-us-alpha-analytical-laboratories-inc",
+    "Route": "/contact-us-alpha-analytical-laboratories-inc",
+    "Output": "contact-us-alpha-analytical-laboratories-inc\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/disinfection-byproducts.html",
+    "Route": "/disinfection-byproducts.html",
+    "Output": "disinfection-byproducts.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/dmrqa",
+    "Route": "/dmrqa",
+    "Output": "dmrqa\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/drinking-bottled-water-program",
+    "Route": "/drinking-bottled-water-program",
+    "Output": "drinking-bottled-water-program\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/elemental-mercury-screening.html",
+    "Route": "/elemental-mercury-screening.html",
+    "Output": "elemental-mercury-screening.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/feedback",
+    "Route": "/feedback",
+    "Output": "feedback\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/forms",
+    "Route": "/forms",
+    "Output": "forms\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/heterotrophic-plate-count-sim-plate-method.html",
+    "Route": "/heterotrophic-plate-count-sim-plate-method.html",
+    "Output": "heterotrophic-plate-count-sim-plate-method.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/homepage",
+    "Route": "/homepage",
+    "Output": "homepage\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/landing-page",
+    "Route": "/landing-page",
+    "Output": "landing-page\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/lead-pb-analysis.html",
+    "Route": "/lead-pb-analysis.html",
+    "Output": "lead-pb-analysis.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/need-storm-water-assistance.html",
+    "Route": "/need-storm-water-assistance.html",
+    "Output": "need-storm-water-assistance.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/npdes-permits.html",
+    "Route": "/npdes-permits.html",
+    "Output": "npdes-permits.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/perchlorate.html",
+    "Route": "/perchlorate.html",
+    "Output": "perchlorate.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/pesticide-and-herbicide-analyses.html",
+    "Route": "/pesticide-and-herbicide-analyses.html",
+    "Output": "pesticide-and-herbicide-analyses.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/pharma-pollutants.html",
+    "Route": "/pharma-pollutants.html",
+    "Output": "pharma-pollutants.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/potw-pretreatment-program-work",
+    "Route": "/potw-pretreatment-program-work",
+    "Output": "potw-pretreatment-program-work\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/privacy-policy",
+    "Route": "/privacy-policy",
+    "Output": "privacy-policy\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/regulatory",
+    "Route": "/regulatory",
+    "Output": "regulatory\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/safe-and-secure-online-data-access.html",
+    "Route": "/safe-and-secure-online-data-access.html",
+    "Output": "safe-and-secure-online-data-access.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/services-listing",
+    "Route": "/services-listing",
+    "Output": "services-listing\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/soil-sludge-sediment-haz-waste-characterization",
+    "Route": "/soil-sludge-sediment-haz-waste-characterization",
+    "Output": "soil-sludge-sediment-haz-waste-characterization\\index.html"
+  },
+  {
+    "Source": "https://www.alpha-labs.com/wastewater-recycled-water-storm-water-ground-water-program-work",
+    "Route": "/wastewater-recycled-water-storm-water-ground-water-program-work",
+    "Output": "wastewater-recycled-water-storm-water-ground-water-program-work\\index.html"
+  }
+]

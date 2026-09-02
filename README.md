@@ -1,20 +1,28 @@
 # Alpha Labs 48-hour website rescue
 
-Independent, static GitHub Pages prospect site for Alpha Analytical Laboratories, Inc. It establishes a recognizable baseline using the organization's current public identity, copy, contact details and imagery so changes can be made and published rapidly during an owner meeting.
+Independent, route-for-route static mirror of the public Alpha Analytical Laboratories website for fast owner-directed changes during a meeting.
+
+## Live staged site
+
+`https://ukiahcomputerworks.github.io/alpha-labs-48hr-preview/`
 
 ## Meeting workflow
 
-1. Open the GitHub Pages URL on the owner's device.
-2. Apply each requested change directly to this repository.
-3. Commit and push to `main`.
-4. Wait for the exact commit's Pages deployment to complete, then refresh the staged URL.
+1. Open the staged URL on the owner's device.
+2. Apply the requested content or style change to the mirrored page or `styles.css`.
+3. Run `Publish-MeetingChange.ps1 -Message '<concise change>'`.
+4. Refresh the cache-busted URL returned by the script after the exact GitHub Pages build succeeds.
 
-For the live meeting path, the repository includes `Publish-MeetingChange.ps1`. After editing, run it with a concise commit message; it validates the source, commits and pushes the change, waits for the exact Pages build and returns a cache-busted refresh URL only after HTTP 200 is confirmed.
+## Mirror maintenance
+
+`Sync-PublicMirror.ps1` reads the two current WordPress post/page sitemaps, downloads every listed public HTML route, rewrites internal page navigation to this GitHub Pages site, adds `noindex, nofollow`, injects the shared meeting override layer and disables all local form submissions. Running it regenerates mirrored HTML and should be intentional because it can replace page-level meeting edits.
+
+`Test-PublicMirror.ps1` verifies the complete 35-route inventory locally and can verify every published route after a GitHub Pages build.
 
 ## Boundaries
 
-- The staged page uses `noindex, nofollow` and contains no private information.
-- The site does not collect data. Contact actions use published phone and email links.
-- Client Data Access and current regulatory/forms/careers links go to Alpha Labs' existing public systems.
-- The current Alpha Labs website, WordPress instance, DNS, domain, forms, email, accounts and production hosting remain unchanged.
-- Public assets and facts are drawn from `https://www.alpha-labs.com/`; production-use approval should be confirmed if the owner adopts the redesign.
+- The staged site contains only current public Alpha Labs material.
+- WordPress theme assets, media and scripts remain read-only references to public `alpha-labs.com` resources so the visual baseline stays identical.
+- Forms are visually preserved but submission is intercepted on the staged copy; no visitor data is collected.
+- Alpha Labs' WordPress instance, DNS, domain, production hosting, forms, email, accounts and Client Data Access remain unchanged.
+- Production adoption requires the owner's content, asset-rights, accessibility, privacy, form, hosting and domain approval.

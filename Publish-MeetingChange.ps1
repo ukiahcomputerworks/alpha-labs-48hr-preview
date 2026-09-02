@@ -22,6 +22,9 @@ try {
     & 'C:\Users\Admin\OneDrive - CWU\AI\Projects\MakeMoney\Test-ProspectPreview.ps1' -SiteRoot $projectRoot
     if (-not $?) { throw 'Local rescue-preview validation failed.' }
 
+    & (Join-Path $projectRoot 'Test-PublicMirror.ps1') -SiteRoot $projectRoot
+    if (-not $?) { throw 'Route-for-route mirror validation failed.' }
+
     git add -A
     $staged = git diff --cached --name-only
     if (-not $staged) { throw 'No meeting changes are staged.' }
@@ -50,6 +53,9 @@ try {
     $cacheBustedUrl = "$liveUrl?v=$commit"
     $response = Invoke-WebRequest -Uri $cacheBustedUrl -UseBasicParsing -TimeoutSec 30
     if ($response.StatusCode -ne 200) { throw "Live site returned HTTP $($response.StatusCode)." }
+
+    & (Join-Path $projectRoot 'Test-PublicMirror.ps1') -SiteRoot $projectRoot -BaseUrl $liveUrl -CacheKey $commit
+    if (-not $?) { throw 'Published route validation failed.' }
 
     [pscustomobject]@{
         Status = 'PUBLISHED'
