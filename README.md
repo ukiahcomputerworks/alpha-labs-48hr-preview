@@ -9,6 +9,8 @@ Independent, static GitHub Pages prospect site for Alpha Analytical Laboratories
 3. Commit and push to `main`.
 4. Wait for the exact commit's Pages deployment to complete, then refresh the staged URL.
 
+For the live meeting path, the repository includes `Publish-MeetingChange.ps1`. After editing, run it with a concise commit message; it validates the source, commits and pushes the change, waits for the exact Pages build and returns a cache-busted refresh URL only after HTTP 200 is confirmed.
+
 ## Boundaries
 
 - The staged page uses `noindex, nofollow` and contains no private information.
