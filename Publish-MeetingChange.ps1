@@ -50,7 +50,7 @@ try {
         throw "Timed out waiting for GitHub Pages to publish $commit."
     }
 
-    $cacheBustedUrl = "$liveUrl?v=$commit"
+    $cacheBustedUrl = "${liveUrl}?v=$commit"
     $response = Invoke-WebRequest -Uri $cacheBustedUrl -UseBasicParsing -TimeoutSec 30
     if ($response.StatusCode -ne 200) { throw "Live site returned HTTP $($response.StatusCode)." }
 

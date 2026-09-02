@@ -47,7 +47,7 @@ foreach ($item in $manifest) {
             "$($item.Route)/"
         }
         $url = "$($BaseUrl.TrimEnd('/'))$route"
-        if ($CacheKey) { $url = "$url?v=$CacheKey" }
+        if ($CacheKey) { $url = "${url}?v=$CacheKey" }
         try {
             $response = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 30
             if ($response.StatusCode -ne 200) {
