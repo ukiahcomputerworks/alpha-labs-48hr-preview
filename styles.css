@@ -23,8 +23,8 @@ textarea:focus-visible {
   }
 }
 
-/* BEGIN STAGED WATER TRANSITION BANNER */
-.site-header {
+/* Prepublished demo banner. Activated by script.js without another deployment. */
+html.demo-banner .site-header {
   background-image: url("./assets/alpha-logo-overlay-hd-v1.png"), url("./assets/alpha-water-transition-background-v1.png");
   background-position: 73% 86px, 30px top;
   background-repeat: no-repeat, no-repeat;
@@ -32,17 +32,17 @@ textarea:focus-visible {
 }
 
 @media (max-width: 960px) {
-  .site-header {
+  html.demo-banner .site-header {
     margin-right: 0;
     background-position: 69% 56px, center top;
     background-size: 27.4% auto, calc(100% - 30px) auto;
   }
 
-  .header-widget-area {
+  html.demo-banner .header-widget-area {
     min-height: 124px;
   }
 
-  #client-connect {
+  html.demo-banner #client-connect {
     background-size: 117px 16px;
     height: 16px;
     margin-right: 15px;
@@ -51,10 +51,9 @@ textarea:focus-visible {
     width: 112px;
   }
 
-  #client-connect a {
+  html.demo-banner #client-connect a {
     font-size: 11px;
     line-height: 16px;
     padding-right: 4px;
   }
 }
-/* END STAGED WATER TRANSITION BANNER */
