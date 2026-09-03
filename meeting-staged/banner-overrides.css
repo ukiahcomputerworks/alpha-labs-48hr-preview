@@ -1,7 +1,7 @@
 /* BEGIN STAGED WATER TRANSITION BANNER */
 .site-header {
   background-image: url("./assets/alpha-water-transition-banner-v3.png");
-  background-position: 30px 45%;
+  background-position: 30px top;
   background-repeat: no-repeat;
   background-size: calc(100% - 60px) auto;
 }
@@ -9,7 +9,7 @@
 @media (max-width: 960px) {
   .site-header {
     margin-right: 0;
-    background-position: center 45%;
+    background-position: center top;
     background-size: calc(100% - 30px) auto;
   }
 
