@@ -22,38 +22,3 @@ textarea:focus-visible {
     min-width: 0;
   }
 }
-
-/* Prepublished demo banner. Activated by script.js without another deployment. */
-html.demo-banner .site-header {
-  background-image: url("./assets/alpha-logo-overlay-hd-v1.png"), url("./assets/alpha-water-transition-background-v1.png");
-  background-position: 73% 86px, 30px top;
-  background-repeat: no-repeat, no-repeat;
-  background-size: 27.4% auto, calc(100% - 60px) auto;
-}
-
-@media (max-width: 960px) {
-  html.demo-banner .site-header {
-    margin-right: 0;
-    background-position: 69% 56px, center top;
-    background-size: 27.4% auto, calc(100% - 30px) auto;
-  }
-
-  html.demo-banner .header-widget-area {
-    min-height: 124px;
-  }
-
-  html.demo-banner #client-connect {
-    background-size: 117px 16px;
-    height: 16px;
-    margin-right: 15px;
-    margin-top: 28px;
-    padding-left: 5px;
-    width: 112px;
-  }
-
-  html.demo-banner #client-connect a {
-    font-size: 11px;
-    line-height: 16px;
-    padding-right: 4px;
-  }
-}
