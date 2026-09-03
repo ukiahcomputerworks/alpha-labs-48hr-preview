@@ -18,7 +18,19 @@ if ($stagedHtml -notmatch 'No information is transmitted, stored, or sent') {
     throw 'The staged Careers page is missing its non-submission disclosure.'
 }
 
-Copy-Item -LiteralPath $stagedPage -Destination $livePage -Force
+$currentHtml = Get-Content -Raw -LiteralPath $livePage
+$stylesheetPattern = '(?:https://ukiahcomputerworks\.github\.io/alpha-labs-48hr-preview/|\.\./|\.\./\.\./)?styles\.css\?v=\d+'
+$currentStylesheet = [regex]::Match($currentHtml, $stylesheetPattern)
+if (-not $currentStylesheet.Success) {
+    throw 'The active Careers page does not contain the expected versioned stylesheet URL.'
+}
+
+$appliedTemplate = [regex]::Replace(
+    $stagedHtml,
+    $stylesheetPattern,
+    $currentStylesheet.Value
+)
+[IO.File]::WriteAllText($livePage, $appliedTemplate, [Text.UTF8Encoding]::new($false))
 
 $appliedHtml = Get-Content -Raw -LiteralPath $livePage
 if ($appliedHtml -notmatch 'data-staged-template="lab-tech-careers"') {
