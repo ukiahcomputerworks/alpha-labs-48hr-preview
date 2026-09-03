@@ -379,6 +379,32 @@ th {
 }
 td, th { border: 1px solid var(--alpha-line) !important; padding: .75rem !important; }
 
+/* Mobile contact actions */
+.phone-link,
+.street-view-link {
+  align-items: center;
+  border-bottom: 1px solid currentColor;
+  color: var(--alpha-gold-bright) !important;
+  display: inline-flex;
+  font-weight: 700;
+  min-height: 44px;
+  padding: .2rem .1rem;
+  text-decoration: none !important;
+}
+.phone-link:hover,
+.phone-link:focus-visible,
+.street-view-link:hover,
+.street-view-link:focus-visible {
+  color: var(--alpha-ivory) !important;
+}
+.location-directory {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem 1rem;
+  margin-top: .75rem;
+}
+.location-directory .street-view-link { font-size: .92rem; }
+
 /* Media */
 .soliloquy-container, .wp-block-image, .wp-block-gallery {
   border: 1px solid var(--alpha-line);

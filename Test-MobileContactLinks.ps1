@@ -1,0 +1,69 @@
+[CmdletBinding()]
+param()
+
+$ErrorActionPreference = 'Stop'
+$root = Split-Path -Parent $MyInvocation.MyCommand.Path
+$manifest = Get-Content -Raw -LiteralPath (Join-Path $root 'mirror-manifest.json') | ConvertFrom-Json
+$failures = [System.Collections.Generic.List[string]]::new()
+$siteHtml = ''
+
+foreach ($item in $manifest) {
+    $siteHtml += [IO.File]::ReadAllText((Join-Path $root $item.Output))
+}
+
+$requiredPhones = @(
+    'tel:+17074680401',
+    'tel:+19166865190',
+    'tel:+19258286226',
+    'tel:+17077693128',
+    'tel:+14242675032',
+    'tel:+17605363352',
+    'tel:+19164407259'
+)
+foreach ($phone in $requiredPhones) {
+    if (-not $siteHtml.Contains($phone)) { $failures.Add("Missing tap-to-call link: $phone") }
+}
+
+$requiredViewpoints = @(
+    '39.1519667%2C-123.2053654',
+    '38.3864557%2C-121.3627006',
+    '37.6916859%2C-121.8039793',
+    '38.2591415%2C-122.6493191',
+    '33.8097415%2C-118.1757486',
+    '33.1454787%2C-117.2294571'
+)
+foreach ($viewpoint in $requiredViewpoints) {
+    if (-not $siteHtml.Contains($viewpoint)) { $failures.Add("Missing Street View location: $viewpoint") }
+}
+
+$streetViewLinks = [regex]::Matches($siteHtml, '<a\b[^>]*class="[^"]*street-view-link[^"]*"[^>]*>')
+if ($streetViewLinks.Count -lt 21) {
+    $failures.Add("Expected at least 21 Street View link placements; found $($streetViewLinks.Count).")
+}
+foreach ($link in $streetViewLinks) {
+    if ($link.Value -notmatch 'target="_blank"' -or $link.Value -notmatch 'rel="noopener noreferrer"') {
+        $failures.Add("Unsafe Street View external link: $($link.Value)")
+    }
+}
+
+$aboutHtml = [IO.File]::ReadAllText((Join-Path $root 'about-us\index.html'))
+if ($aboutHtml -match 'href="tel:\+15555555555"') {
+    $failures.Add('The sample 555 number must not be presented as a working call link.')
+}
+if ($aboutHtml -match '1234 Block Blvd\.[\s\S]{0,300}street-view-link') {
+    $failures.Add('The sample San Francisco address must not be presented as a verified Street View location.')
+}
+
+$feedbackHtml = [IO.File]::ReadAllText((Join-Path $root 'feedback\index.html'))
+if ($feedbackHtml -notmatch 'type=[''"]tel[''"]') {
+    $failures.Add('The feedback form phone field is no longer a telephone input.')
+}
+
+if ($failures.Count -gt 0) {
+    $failures | ForEach-Object { Write-Error $_ }
+    exit 1
+}
+
+Write-Host "PASS: $($requiredPhones.Count) unique tap-to-call destinations are present."
+Write-Host "PASS: $($requiredViewpoints.Count) verified Alpha Labs locations have safe Street View actions across $($streetViewLinks.Count) placements."
+Write-Host 'PASS: sample contact data remains non-actionable and telephone form input is preserved.'
