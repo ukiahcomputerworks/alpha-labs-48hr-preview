@@ -37,3 +37,14 @@ Every route in `mirror-manifest.json` uses the public site's own shared header, 
 - Every mirrored route adds `noindex, nofollow`.
 - Form submission is disabled on the staged copy to prevent production data entry.
 - Internal HTML page navigation remains inside the GitHub Pages mirror. Client Data Access, PDFs and other non-page resources continue to use their current public destinations.
+
+## Dormant Lab Tech Careers replacement
+
+The unlinked `meeting-staged/careers-lab-tech/index.html` file duplicates the current Careers shell and shared components while replacing only the page content. It retains the current `Careers` title class, Source Sans Pro body typography, Alpha blue link/button color, square controls, navigation, header, and footer. Its deliberate page-specific components are a light-gray job-summary panel, three job-fact blocks, a two-column duties/qualifications layout, and a two-column application form that collapses to one column below 700 pixels.
+
+| Route state | Title | Body | Navigation | Page-specific component | Desktop | Phone |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/careers/` active | Existing `entry-title` | Existing theme body | Careers only | Original no-openings copy | Unchanged | Unchanged |
+| `/meeting-staged/careers-lab-tech/` dormant | Existing `entry-title` | Existing theme body | Careers only | Lab Tech opening and application preview | 1440 × 900 pass | 390 × 844 pass |
+
+Rendered checks confirm no horizontal overflow, no broken images, one active navigation item, readable form controls, successful client-side confirmation, and zero non-GET requests during submission. The form disclosure states that entered information is neither transmitted nor stored. The dormant page can be copied over the active Careers route with `Apply-StagedCareers.ps1` when the owner gives the meeting cue.

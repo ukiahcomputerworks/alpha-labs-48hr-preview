@@ -13,6 +13,13 @@ Independent, route-for-route static mirror of the public Alpha Analytical Labora
 3. Run `Publish-MeetingChange.ps1 -Message '<concise change>'`.
 4. Refresh the cache-busted URL returned by the script after the exact GitHub Pages build succeeds.
 
+## Prepared meeting cues
+
+- `apply new banner`: connect the already-staged `assets/alpha-water-transition-banner-v1.png`, then run the normal meeting publication workflow.
+- A direct request to create the Lab Tech application, such as `create a job application`: run `Apply-StagedCareers.ps1`, then run `Publish-MeetingChange.ps1 -Message 'Add Lab Tech opening and application preview'`.
+
+The prepared Careers replacement is stored at `meeting-staged/careers-lab-tech/index.html`. It is published only as an unlinked, `noindex` rehearsal asset until the cue. `Test-StagedCareers.ps1` verifies that the active Careers route remains unchanged, required Lab Tech content exists, and the form has no external submission target. `Test-StagedCareers.mjs` performs rendered desktop/phone and form-interaction checks.
+
 ## Mirror maintenance
 
 `Sync-PublicMirror.ps1` reads the two current WordPress post/page sitemaps, downloads every listed public HTML route, rewrites internal page navigation to this GitHub Pages site, adds `noindex, nofollow`, injects the shared meeting override layer and disables all local form submissions. Running it regenerates mirrored HTML and should be intentional because it can replace page-level meeting edits.
