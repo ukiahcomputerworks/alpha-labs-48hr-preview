@@ -15,7 +15,8 @@ if ($styles -match 'BEGIN STAGED WATER TRANSITION BANNER') {
 }
 
 $stagedCss = Get-Content -Raw -LiteralPath $stagedCssPath
-if ($stagedCss -notmatch 'alpha-water-transition-banner-v1\.png') {
+if ($stagedCss -notmatch 'alpha-logo-overlay-ai-v3\.png' -or
+    $stagedCss -notmatch 'alpha-water-transition-background-v1\.png') {
     throw 'The staged banner CSS is invalid.'
 }
 
