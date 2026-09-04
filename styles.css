@@ -361,7 +361,7 @@ fieldset { border-color: var(--alpha-line) !important; }
 }
 
 table {
-  background: var(--alpha-ink);
+  background: var(--alpha-ink) !important;
   border: 1px solid var(--alpha-line) !important;
   border-collapse: collapse;
   color: var(--alpha-muted);
@@ -381,14 +381,34 @@ td, th { border: 1px solid var(--alpha-line) !important; padding: .75rem !import
 
 /* Mobile contact actions */
 .phone-link,
-.street-view-link {
-  border-bottom: 1px solid currentColor;
+.street-view-link,
+.street-view-link > span {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: alpha-contact-link-shimmer 3.6s ease-in-out infinite;
+  background-image: linear-gradient(
+    105deg,
+    #a76508 0%,
+    #ffd24f 28%,
+    #fff8cf 44%,
+    #ffd24f 56%,
+    #a76508 100%
+  );
+  background-position: 115% center;
+  background-size: 240% 100%;
+  border-bottom: 1px solid var(--alpha-gold);
   color: var(--alpha-gold-bright) !important;
   display: inline-block;
   font-weight: 700;
   min-height: 44px;
   padding: .2rem .1rem;
   text-decoration: none !important;
+}
+.street-view-link > span {
+  border: 0;
+  display: inline;
+  min-height: 0;
+  padding: 0;
 }
 .street-view-link::after {
   content: " ↗";
@@ -399,7 +419,13 @@ td, th { border: 1px solid var(--alpha-line) !important; padding: .75rem !import
 .phone-link:focus-visible,
 .street-view-link:hover,
 .street-view-link:focus-visible {
-  color: var(--alpha-ivory) !important;
+  background-position: 0 center;
+  border-bottom-color: var(--alpha-champagne);
+}
+
+@keyframes alpha-contact-link-shimmer {
+  0%, 58% { background-position: 115% center; }
+  82%, 100% { background-position: -15% center; }
 }
 .location-directory {
   display: flex;
@@ -514,6 +540,8 @@ td, th { border: 1px solid var(--alpha-line) !important; padding: .75rem !import
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: .01ms !important;
   }
