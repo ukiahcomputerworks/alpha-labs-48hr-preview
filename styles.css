@@ -701,25 +701,7 @@ body {
 }
 
 .site-title a::after {
-  animation: alpha-flask-shimmer-header 7.3s cubic-bezier(.45, 0, .35, 1) -2.1s infinite;
-  clip-path: polygon(
-    23% 0,
-    77% 0,
-    82% 10%,
-    72% 27%,
-    100% 92%,
-    88% 100%,
-    12% 100%,
-    0 92%,
-    28% 27%,
-    18% 10%
-  );
-  height: 48px;
-  inset: 4px auto auto 2px;
-  -webkit-mask: none;
-  mask: none;
-  opacity: .72;
-  width: 28px;
+  display: none;
 }
 
 .site-description {
@@ -914,11 +896,6 @@ button::after, .button::after { animation-duration: 5.1s; animation-delay: -2.7s
   inset: 0;
   opacity: .68;
   width: 100%;
-}
-
-@keyframes alpha-flask-shimmer-header {
-  0%, 66% { background-position: -180% center; }
-  82%, 100% { background-position: 180% center; }
 }
 
 @keyframes alpha-flask-shimmer-hero {
@@ -1208,11 +1185,6 @@ input[type="submit"],
     padding: 64px 47% 78px 0;
   }
 
-  .site-title a::after {
-    height: 34px;
-    inset: 3px auto auto 1px;
-    width: 20px;
-  }
   .alpha-after-dark__logo-wrap { max-width: 360px; }
   .alpha-after-dark__readout { left: 42%; }
 
