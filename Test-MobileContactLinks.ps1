@@ -25,7 +25,7 @@ foreach ($phone in $requiredPhones) {
 }
 
 $requiredViewpoints = @(
-    '39.1519667%2C-123.2053654',
+    'pano=NtjI8njwl09KLYJs2zLXmA&amp;viewpoint=39.1519667%2C-123.2053654&amp;heading=265.94&amp;pitch=3&amp;fov=75',
     '38.3864557%2C-121.3627006',
     '37.6916859%2C-121.8039793',
     '38.2591415%2C-122.6493191',
