@@ -629,15 +629,15 @@ body {
   grid-template-columns: minmax(250px, 1fr) auto;
   margin: 0 auto;
   max-width: var(--alpha-max) !important;
-  min-height: 116px;
-  padding: 14px 0 0;
+  min-height: 88px;
+  padding: 8px 0 0;
   position: relative;
 }
 
 .title-area {
   align-items: center;
   display: flex;
-  min-height: 74px;
+  min-height: 58px;
   height: auto !important;
   opacity: 1;
   float: none !important;
@@ -664,7 +664,7 @@ body {
   display: block;
   font-size: 0;
   float: none !important;
-  height: 68px;
+  height: 52px;
   overflow: hidden;
   text-decoration: none;
   width: min(500px, 50vw) !important;
@@ -692,7 +692,7 @@ body {
   align-items: center;
   display: flex;
   float: none !important;
-  min-height: 74px;
+  min-height: 58px;
   height: auto !important;
   padding: 0 !important;
   width: auto !important;
@@ -736,7 +736,7 @@ button::after,
   border-top: 1px solid rgba(255, 210, 79, .16);
   grid-column: 1 / -1;
   grid-row: 2;
-  margin-top: 8px;
+  margin-top: 3px;
   width: 100%;
 }
 
@@ -751,7 +751,7 @@ button::after,
   color: #f7f2e7 !important;
   font-size: .8rem !important;
   letter-spacing: .11em;
-  padding: .83rem .55rem !important;
+  padding: .68rem .55rem !important;
 }
 
 .genesis-nav-menu a:hover,
@@ -1086,14 +1086,14 @@ input[type="submit"],
   .site-header > .wrap {
     gap: 0 1rem;
     grid-template-columns: minmax(0, 1fr) auto auto;
-    min-height: 104px;
-    padding: 10px 16px 0;
+    min-height: 82px;
+    padding: 6px 16px 0;
   }
 
-  .title-area { min-height: 66px; width: min(510px, 65vw) !important; }
-  .site-title a { height: 59px; width: min(390px, 42vw); }
+  .title-area { min-height: 54px; width: min(510px, 65vw) !important; }
+  .site-title a { height: 48px; width: min(390px, 42vw); }
   .site-description { display: none; }
-  .header-widget-area { min-height: 66px; }
+  .header-widget-area { min-height: 54px; }
   .header-widget-area { grid-column: 2; grid-row: 1; }
 
   .menu-toggle {
@@ -1143,7 +1143,7 @@ input[type="submit"],
     grid-column: 1;
     grid-row: 1;
     justify-content: flex-start;
-    min-height: 68px;
+    min-height: 54px;
   }
 
   .site-title a {
@@ -1154,7 +1154,7 @@ input[type="submit"],
   .header-widget-area {
     grid-column: 2;
     grid-row: 1;
-    min-height: 58px;
+    min-height: 54px;
   }
 
   .menu-toggle {
