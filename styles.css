@@ -667,8 +667,34 @@ body {
   float: none !important;
   height: 68px;
   overflow: hidden;
+  position: relative;
   text-decoration: none;
   width: min(500px, 50vw) !important;
+}
+
+.site-title a::after,
+.alpha-after-dark__flask-shimmer {
+  animation: alpha-flask-shimmer 4.8s ease-in-out infinite;
+  background: linear-gradient(
+    102deg,
+    transparent 0 34%,
+    rgba(255, 232, 128, .18) 40%,
+    rgba(255, 255, 255, .98) 49%,
+    rgba(255, 210, 79, .34) 58%,
+    transparent 66% 100%
+  ) -180% center / 240% 100% no-repeat;
+  clip-path: inset(0 85.8% 0 0);
+  content: "";
+  inset: 0 auto 0 0;
+  -webkit-mask: url("./assets/alpha-logo-overlay-hd-v1.png") left center / contain no-repeat;
+  mask: url("./assets/alpha-logo-overlay-hd-v1.png") left center / contain no-repeat;
+  pointer-events: none;
+  position: absolute;
+}
+
+.site-title a::after {
+  height: 68px;
+  width: 204px;
 }
 
 .site-description {
@@ -839,12 +865,26 @@ button::after,
   z-index: 2;
 }
 
-.alpha-after-dark__logo {
+.alpha-after-dark__logo-wrap {
   display: block;
   filter: drop-shadow(0 10px 24px rgba(0, 0, 0, .86));
   margin: 0 0 2rem;
   max-width: 470px;
+  position: relative;
   width: 100%;
+}
+
+.alpha-after-dark__logo {
+  display: block;
+  margin: 0;
+  width: 100%;
+}
+
+.alpha-after-dark__flask-shimmer { inset: 0; width: 100%; }
+
+@keyframes alpha-flask-shimmer {
+  0%, 58% { background-position: -180% center; }
+  82%, 100% { background-position: 180% center; }
 }
 
 .alpha-after-dark__eyebrow {
@@ -1129,7 +1169,8 @@ input[type="submit"],
     padding: 64px 47% 78px 0;
   }
 
-  .alpha-after-dark__logo { max-width: 360px; }
+  .site-title a::after { height: 48px; width: 144px; }
+  .alpha-after-dark__logo-wrap { max-width: 360px; }
   .alpha-after-dark__readout { left: 42%; }
 
   .alpha-action-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1188,7 +1229,7 @@ input[type="submit"],
     width: calc(100% - 38px);
   }
 
-  .alpha-after-dark__logo {
+  .alpha-after-dark__logo-wrap {
     margin-bottom: 1.2rem;
     max-width: 320px;
   }
@@ -1228,7 +1269,7 @@ input[type="submit"],
   }
 
   .alpha-after-dark__content { padding-top: 280px; }
-  .alpha-after-dark__logo { max-width: 280px; }
+  .alpha-after-dark__logo-wrap { max-width: 280px; }
   .alpha-after-dark__eyebrow { font-size: .68rem; }
 
   .alpha-after-dark__actions {

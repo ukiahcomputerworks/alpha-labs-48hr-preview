@@ -15,7 +15,10 @@ if (homeSlider && !homeSlider.querySelector('.alpha-after-dark')) {
   hero.innerHTML = `
     <div class="alpha-after-dark__ambient" aria-hidden="true"></div>
     <div class="alpha-after-dark__content">
-      <img class="alpha-after-dark__logo" src="assets/alpha-logo-overlay-hd-v1.png" alt="Alpha Analytical Laboratories, Inc.">
+      <span class="alpha-after-dark__logo-wrap">
+        <img class="alpha-after-dark__logo" src="assets/alpha-logo-overlay-hd-v1.png" alt="Alpha Analytical Laboratories, Inc.">
+        <span class="alpha-after-dark__flask-shimmer" aria-hidden="true"></span>
+      </span>
       <p class="alpha-after-dark__eyebrow">Environmental analytical laboratory</p>
       <h1 id="alpha-after-dark-title">The science is serious.<br><span>The experience doesn't have to be.</span></h1>
       <p class="alpha-after-dark__summary">Total Water Matrix, Sediment and Hazardous Waste Testing and Analyses</p>
