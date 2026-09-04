@@ -1,8 +1,8 @@
-# Alpha Labs Black-and-Gold Visual System
+# Alpha Labs: Alpha After Dark Visual System
 
 ## Direction
 
-The redesign keeps Alpha Labs' established information architecture and laboratory authority while giving the site a sharp, technical, forward-looking presentation. ComputerWorks.AI informs the energy and contrast, but Alpha Labs uses its own restrained black, graphite, ivory, and metallic-gold system.
+The redesign keeps Alpha Labs' established information architecture and laboratory authority while completely reinventing the experience around it. The opening scene is a private laboratory after midnight: black lacquer, smoked glass, a suspended graduated cylinder, molten-gold analytical light, and restrained scientific traces. The result is sharp, playful, forward-looking, and still trustworthy.
 
 ## Tokens
 
@@ -22,11 +22,12 @@ The redesign keeps Alpha Labs' established information architecture and laborato
 ## Component language
 
 - Use square corners, clipped corner details, thin technical rules, and restrained gold glows.
-- Keep the approved water-transition banner art and logo proportions intact.
+- Retire the old water-transition banner entirely. Use a cinematic, art-directed hero with the Alpha logo maintained as a separate high-definition layer.
 - Treat navigation as a high-contrast instrument strip with gold state indicators.
 - Place long-form content on dark graphite panels with comfortable line height.
-- Use gold as a signal for actions, links, section markers, form focus, and table headers.
-- Avoid rounded consumer-app cards, beige surfaces, soft shadows, and decorative clutter.
+- Build gold from champagne highlights, 24-karat brights, amber mids, and bronze shadows. Gold must behave like a reflective material, not a flat yellow.
+- Use sharp diagonal cuts, clipped corners, thin scientific traces, glass reflections, and controlled glints.
+- Avoid rounded consumer-app cards, beige surfaces, generic scientist stock photography, blue corporate gradients, forests, water banners, hexagon grids, casino glitter, and decorative clutter.
 
 ## Retained route families
 
@@ -46,3 +47,7 @@ All 35 manifest routes retain noindex/no-follow, existing content, and existing 
 - Navigation remains operable.
 - Images and tables stay within the content column.
 - Form fields remain legible and usable.
+
+## Intentional route exception
+
+- `/landing-page/` retains its original WordPress headerless landing-template structure. It receives the shared typography, content-panel, link, and responsive treatments, but the header-logo check is not applicable because that route contains no header markup.

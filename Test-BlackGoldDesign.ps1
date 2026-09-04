@@ -17,7 +17,7 @@ if (@($manifest).Count -ne 35) {
     $failures.Add("Expected 35 retained routes; found $(@($manifest).Count).")
 }
 
-foreach ($token in @('--alpha-black', '--alpha-gold', '--alpha-ivory', '--alpha-display', '@media (max-width: 600px)')) {
+foreach ($token in @('--alpha-black', '--alpha-gold-material', '--alpha-champagne', '--alpha-ivory', '--alpha-display', '.alpha-after-dark', '@media (max-width: 600px)')) {
     if (-not $styles.Contains($token)) { $failures.Add("Missing visual-system marker: $token") }
 }
 
@@ -35,8 +35,8 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=21') {
-        $failures.Add("Missing design cache key v21: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=24') {
+        $failures.Add("Missing Alpha After Dark design cache key v24: $($item.Route)")
     }
 }
 
@@ -53,5 +53,5 @@ if ($failures.Count -gt 0) {
     exit 1
 }
 
-Write-Host "PASS: $(@($manifest).Count) retained routes reference the black-and-gold design system."
+Write-Host "PASS: $(@($manifest).Count) retained routes reference the Alpha After Dark design system."
 Write-Host 'PASS: robots, responsive viewport, staged Careers content, and preview-form safety are preserved.'

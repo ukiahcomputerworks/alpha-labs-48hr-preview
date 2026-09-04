@@ -46,6 +46,18 @@ foreach ($link in $streetViewLinks) {
     }
 }
 
+if ($siteHtml -match 'class="street-view-link"[^>]*>\s*Street View\s*</a>') {
+    $failures.Add('Standalone Street View labels remain; the visible address must be the link.')
+}
+
+$addressLinks = [regex]::Matches($siteHtml, '<a\b[^>]*class="[^"]*street-view-link[^"]*"[^>]*>[\s\S]*?</a>')
+foreach ($link in $addressLinks) {
+    $visibleText = [Net.WebUtility]::HtmlDecode(([regex]::Replace($link.Value, '<[^>]+>', ' ')))
+    if ($visibleText -notmatch '\d{2,}\s+[A-Za-z]') {
+        $failures.Add("Street View link does not expose a visible street address: $($link.Value)")
+    }
+}
+
 $aboutHtml = [IO.File]::ReadAllText((Join-Path $root 'about-us\index.html'))
 if ($aboutHtml -match 'href="tel:\+15555555555"') {
     $failures.Add('The sample 555 number must not be presented as a working call link.')
@@ -65,5 +77,5 @@ if ($failures.Count -gt 0) {
 }
 
 Write-Host "PASS: $($requiredPhones.Count) unique tap-to-call destinations are present."
-Write-Host "PASS: $($requiredViewpoints.Count) verified Alpha Labs locations have safe Street View actions across $($streetViewLinks.Count) placements."
+Write-Host "PASS: $($requiredViewpoints.Count) verified Alpha Labs locations use their visible addresses as safe Street View links across $($streetViewLinks.Count) placements."
 Write-Host 'PASS: sample contact data remains non-actionable and telephone form input is preserved.'
