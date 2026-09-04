@@ -427,6 +427,14 @@ td, th { border: 1px solid var(--alpha-line) !important; padding: .75rem !import
   0%, 58% { background-position: 115% center; }
   82%, 100% { background-position: -15% center; }
 }
+.street-view-link,
+.street-view-link > span { animation-duration: 5.4s; animation-delay: -.9s; }
+.phone-link { animation-duration: 4.7s; animation-delay: -2.3s; }
+table.locations td:nth-child(2) :is(.street-view-link, .street-view-link > span) { animation-delay: -2.1s; }
+table.locations td:nth-child(3) :is(.street-view-link, .street-view-link > span) { animation-delay: -3.8s; }
+table.locations td:nth-child(4) :is(.street-view-link, .street-view-link > span) { animation-delay: -1.6s; }
+table.locations td:nth-child(5) :is(.street-view-link, .street-view-link > span) { animation-delay: -4.5s; }
+table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span) { animation-delay: -2.9s; }
 .location-directory {
   display: flex;
   flex-wrap: wrap;
@@ -674,13 +682,13 @@ body {
 
 .site-title a::after,
 .alpha-after-dark__flask-shimmer {
-  animation: alpha-flask-shimmer 4.8s ease-in-out infinite;
   background: linear-gradient(
     102deg,
     transparent 0 34%,
-    rgba(255, 232, 128, .18) 40%,
-    rgba(255, 255, 255, .98) 49%,
-    rgba(255, 210, 79, .34) 58%,
+    rgba(217, 144, 21, .08) 39%,
+    rgba(255, 241, 173, .64) 47%,
+    rgba(255, 210, 79, .42) 53%,
+    rgba(196, 124, 11, .12) 60%,
     transparent 66% 100%
   ) -180% center / 240% 100% no-repeat;
   clip-path: inset(0 85.8% 0 0);
@@ -693,7 +701,9 @@ body {
 }
 
 .site-title a::after {
+  animation: alpha-flask-shimmer-header 7.3s cubic-bezier(.45, 0, .35, 1) -2.1s infinite;
   height: 68px;
+  opacity: .72;
   width: 204px;
 }
 
@@ -752,6 +762,10 @@ button::after,
   transform: translateX(-135%);
   animation: alpha-gold-sweep 4.8s ease-in-out infinite;
 }
+
+#client-connect::after { animation-duration: 5.7s; animation-delay: -1.3s; }
+.alpha-after-dark__primary::after { animation-duration: 6.4s; animation-delay: -4.1s; }
+button::after, .button::after { animation-duration: 5.1s; animation-delay: -2.7s; }
 
 #client-connect a {
   font-size: .82rem !important;
@@ -880,11 +894,21 @@ button::after,
   width: 100%;
 }
 
-.alpha-after-dark__flask-shimmer { inset: 0; width: 100%; }
+.alpha-after-dark__flask-shimmer {
+  animation: alpha-flask-shimmer-hero 8.9s cubic-bezier(.38, 0, .3, 1) -5.4s infinite;
+  inset: 0;
+  opacity: .68;
+  width: 100%;
+}
 
-@keyframes alpha-flask-shimmer {
-  0%, 58% { background-position: -180% center; }
+@keyframes alpha-flask-shimmer-header {
+  0%, 66% { background-position: -180% center; }
   82%, 100% { background-position: 180% center; }
+}
+
+@keyframes alpha-flask-shimmer-hero {
+  0%, 52% { background-position: 180% center; }
+  72%, 100% { background-position: -180% center; }
 }
 
 .alpha-after-dark__eyebrow {
