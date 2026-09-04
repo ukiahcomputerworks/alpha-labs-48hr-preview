@@ -637,7 +637,7 @@ body {
 .title-area {
   align-items: center;
   display: flex;
-  min-height: 58px;
+  min-height: 74px;
   height: auto !important;
   opacity: 1;
   float: none !important;
@@ -664,7 +664,7 @@ body {
   display: block;
   font-size: 0;
   float: none !important;
-  height: 52px;
+  height: 68px;
   overflow: hidden;
   text-decoration: none;
   width: min(500px, 50vw) !important;
@@ -692,7 +692,7 @@ body {
   align-items: center;
   display: flex;
   float: none !important;
-  min-height: 58px;
+  min-height: 74px;
   height: auto !important;
   padding: 0 !important;
   width: auto !important;
@@ -710,6 +710,7 @@ body {
   clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
   overflow: hidden;
   position: relative;
+  margin: 0 !important;
 }
 
 #client-connect::after,
@@ -737,6 +738,7 @@ button::after,
   grid-column: 1 / -1;
   grid-row: 2;
   margin-top: 3px;
+  padding: 0 !important;
   width: 100%;
 }
 
