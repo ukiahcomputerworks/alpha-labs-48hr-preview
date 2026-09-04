@@ -702,9 +702,24 @@ body {
 
 .site-title a::after {
   animation: alpha-flask-shimmer-header 7.3s cubic-bezier(.45, 0, .35, 1) -2.1s infinite;
-  height: 68px;
+  clip-path: polygon(
+    23% 0,
+    77% 0,
+    82% 10%,
+    72% 27%,
+    100% 92%,
+    88% 100%,
+    12% 100%,
+    0 92%,
+    28% 27%,
+    18% 10%
+  );
+  height: 48px;
+  inset: 4px auto auto 2px;
+  -webkit-mask: none;
+  mask: none;
   opacity: .72;
-  width: 204px;
+  width: 28px;
 }
 
 .site-description {
@@ -1193,7 +1208,11 @@ input[type="submit"],
     padding: 64px 47% 78px 0;
   }
 
-  .site-title a::after { height: 48px; width: 144px; }
+  .site-title a::after {
+    height: 34px;
+    inset: 3px auto auto 1px;
+    width: 20px;
+  }
   .alpha-after-dark__logo-wrap { max-width: 360px; }
   .alpha-after-dark__readout { left: 42%; }
 
