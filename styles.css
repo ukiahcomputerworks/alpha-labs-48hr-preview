@@ -632,6 +632,7 @@ body {
   min-height: 88px;
   padding: 8px 0 0;
   position: relative;
+  width: calc(100% - 48px) !important;
 }
 
 .title-area {
@@ -1090,6 +1091,7 @@ input[type="submit"],
     grid-template-columns: minmax(0, 1fr) auto auto;
     min-height: 82px;
     padding: 6px 16px 0;
+    width: 100% !important;
   }
 
   .title-area { min-height: 54px; width: min(510px, 65vw) !important; }
