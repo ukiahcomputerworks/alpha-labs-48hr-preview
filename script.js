@@ -48,7 +48,7 @@ if (homeSlider && !homeSlider.querySelector('.alpha-after-dark')) {
       <span class="alpha-action-rail__number">02</span>
       <span><strong>Know what you brought?</strong><small>Choose a testing service</small></span>
     </a>
-    <a href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;pano=NtjI8njwl09KLYJs2zLXmA&amp;viewpoint=39.1519667%2C-123.2053654&amp;heading=265.94&amp;pitch=3&amp;fov=75" target="_blank" rel="noopener noreferrer">
+    <a href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;pano=hrSOhWrCACuB3DL7BAOeWw&amp;viewpoint=39.1522388%2C-123.2055537&amp;heading=265.94&amp;pitch=3&amp;fov=75" target="_blank" rel="noopener noreferrer">
       <span class="alpha-action-rail__number">03</span>
       <span><strong>See where science happens</strong><small>Visit the Ukiah laboratory</small></span>
     </a>
