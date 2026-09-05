@@ -634,7 +634,8 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
 .california-map {
   aspect-ratio: 420 / 680;
   margin: 0 auto;
-  max-width: 420px;
+  max-width: 280px;
+  overflow: visible;
   position: relative;
   width: 100%;
 }
@@ -649,8 +650,21 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
   display: block;
   filter: drop-shadow(0 20px 32px rgba(0, 0, 0, .58)) drop-shadow(0 0 18px rgba(255, 194, 38, .18));
   height: 100%;
+  overflow: visible;
   position: relative;
   width: 100%;
+}
+.california-map__shine-sweep {
+  animation: alpha-state-shimmer 6.8s cubic-bezier(.4, 0, .2, 1) infinite;
+  mix-blend-mode: screen;
+  transform-box: view-box;
+  transform-origin: center;
+}
+@keyframes alpha-state-shimmer {
+  0%, 24% { opacity: 0; transform: translateX(0); }
+  30% { opacity: .88; }
+  66% { opacity: .88; }
+  74%, 100% { opacity: 0; transform: translateX(760px); }
 }
 .alpha-map-pin {
   align-items: center;
@@ -888,7 +902,7 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
   .location-vault { grid-template-columns: minmax(0, 1fr); }
   .alpha-location-room { margin-top: 1.25rem; }
   .alpha-location-map-layout { grid-template-columns: minmax(0, 1fr); }
-  .california-map { max-width: 390px; }
+  .california-map { max-width: 276px; }
   .location-intelligence { min-height: 340px; }
 
   .menu-toggle, .sub-menu-toggle {
@@ -1656,7 +1670,7 @@ input[type="submit"],
     padding: .95rem;
   }
   .location-dossier__reveal .phone-link { justify-self: start; }
-  .california-map { max-width: 340px; }
+  .california-map { max-width: 258px; }
   .alpha-map-pin { font-size: .64rem !important; gap: .26rem; }
   .alpha-map-pin > span:last-child { padding: .3rem .34rem; }
   .alpha-map-pin__dot { height: 13px; width: 13px; }
@@ -1721,6 +1735,7 @@ input[type="submit"],
   button::after,
   .button::after,
   .location-dossier__reveal,
+  .california-map__shine-sweep,
   .alpha-map-pin.is-active .alpha-map-pin__dot,
   .location-intelligence__panel { animation: none; }
 }

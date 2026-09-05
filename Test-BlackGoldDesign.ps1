@@ -35,8 +35,8 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=33') {
-        $failures.Add("Missing Alpha After Dark design cache key v33: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=34') {
+        $failures.Add("Missing Alpha After Dark design cache key v34: $($item.Route)")
     }
 }
 
