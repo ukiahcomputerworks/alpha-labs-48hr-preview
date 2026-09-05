@@ -35,8 +35,8 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=34') {
-        $failures.Add("Missing Alpha After Dark design cache key v34: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=35') {
+        $failures.Add("Missing Alpha After Dark design cache key v35: $($item.Route)")
     }
 }
 
@@ -46,6 +46,11 @@ if ($careers -notmatch 'data-staged-template="lab-tech-careers"') {
 }
 if ($careers -notmatch 'No information is transmitted, stored, or sent') {
     $failures.Add('The Careers form safety notice is missing.')
+}
+
+$contact = Get-Content -Raw -LiteralPath (Join-Path $root 'contact-us-alpha-analytical-laboratories-inc\index.html')
+if ($contact -notmatch 'TIGERweb 2025 State_County geometry, STATE 06' -or $contact -notmatch 'id="california-boundary"' -or $contact -notmatch 'california-map__shine-sweep') {
+    $failures.Add('The official Census-derived California locator or its clipped shimmer is missing.')
 }
 
 if ($failures.Count -gt 0) {
