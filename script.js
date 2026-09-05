@@ -59,3 +59,31 @@ if (homeSlider && !homeSlider.querySelector('.alpha-after-dark')) {
   `;
   homeSlider.insertAdjacentElement('afterend', actionRail);
 }
+
+const locationRoom = document.querySelector('.alpha-location-room');
+
+if (locationRoom) {
+  const locationButtons = [...locationRoom.querySelectorAll('[data-location]')];
+  const locationPanels = [...locationRoom.querySelectorAll('[data-location-panel]')];
+  const locationPlaceholder = locationRoom.querySelector('[data-location-placeholder]');
+
+  locationButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const selectedLocation = button.dataset.location;
+
+      locationButtons.forEach((candidate) => {
+        const isSelected = candidate === button;
+        candidate.classList.toggle('is-active', isSelected);
+        candidate.setAttribute('aria-expanded', String(isSelected));
+      });
+
+      locationPanels.forEach((panel) => {
+        panel.hidden = panel.dataset.locationPanel !== selectedLocation;
+      });
+
+      if (locationPlaceholder) {
+        locationPlaceholder.hidden = true;
+      }
+    });
+  });
+}

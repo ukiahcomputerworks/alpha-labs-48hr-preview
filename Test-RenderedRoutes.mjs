@@ -58,6 +58,33 @@ try {
         const headerlessLandingTemplate = route === '/landing-page/' && !state.headerPresent;
         if (!state.headerLogoVisible && !headerlessLandingTemplate) failures.push(`${viewport.name} ${route}: header logo is not visible`);
         if (state.visibleStreetViewLabels) failures.push(`${viewport.name} ${route}: standalone Street View label remains`);
+
+        if (route === '/contact-us-alpha-analytical-laboratories-inc/') {
+          const locations = [
+            ['Ukiah', 'ukiah'],
+            ['Petaluma', 'petaluma'],
+            ['Elk Grove', 'elk-grove'],
+            ['Livermore', 'livermore'],
+            ['Signal Hill', 'signal-hill'],
+            ['Vista', 'vista'],
+          ];
+
+          for (const [buttonName, panelName] of locations) {
+            await page.getByRole('button', { name: buttonName, exact: true }).click();
+            const locatorState = await page.evaluate(() => ({
+              activePins: document.querySelectorAll('.alpha-map-pin.is-active').length,
+              visiblePanels: [...document.querySelectorAll('[data-location-panel]')]
+                .filter((panel) => !panel.hidden)
+                .map((panel) => panel.dataset.locationPanel),
+              placeholderHidden: document.querySelector('[data-location-placeholder]')?.hidden,
+            }));
+
+            if (locatorState.activePins !== 1 || locatorState.visiblePanels.length !== 1 || locatorState.visiblePanels[0] !== panelName || !locatorState.placeholderHidden) {
+              failures.push(`${viewport.name} ${route}: ${buttonName} did not release only its matching location panel`);
+            }
+          }
+        }
+
         results.push({ viewport: viewport.name, route, ...state });
       } catch (error) {
         failures.push(`${viewport.name} ${route}: ${error.message}`);
