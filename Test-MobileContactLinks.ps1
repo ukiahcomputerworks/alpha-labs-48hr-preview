@@ -27,10 +27,10 @@ foreach ($phone in $requiredPhones) {
 $requiredViewpoints = @(
     'pano=hrSOhWrCACuB3DL7BAOeWw&amp;viewpoint=39.1522388%2C-123.2055537&amp;heading=265.94&amp;pitch=3&amp;fov=75',
     'pano=Kzeu8duDrdPRLF1ls2HtdQ&amp;viewpoint=38.3864331%2C-121.3632251&amp;heading=131.63&amp;pitch=8.23&amp;fov=75',
-    '37.6916859%2C-121.8039793',
-    '38.2591415%2C-122.6493191',
-    '33.8097415%2C-118.1757486',
-    '33.1454787%2C-117.2294571'
+    'eiwmjrYIy4pXrqJ8vMRZyg',
+    '6tT44-bsUzYURf0uz4lkwg',
+    'ADsf5U4F_86DB1IFNYfwpA',
+    'PBBjY1xAnGrsFhH8jSf_cA'
 )
 foreach ($viewpoint in $requiredViewpoints) {
     if (-not $siteHtml.Contains($viewpoint)) { $failures.Add("Missing Street View location: $viewpoint") }
