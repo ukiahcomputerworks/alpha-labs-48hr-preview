@@ -71,17 +71,22 @@ try {
 
           for (const [buttonName, panelName] of locations) {
             await page.getByRole('button', { name: buttonName, exact: true }).click();
-            const locatorState = await page.evaluate(() => ({
-              activePins: document.querySelectorAll('.alpha-map-pin.is-active').length,
-              visiblePanels: [...document.querySelectorAll('[data-location-panel]')]
-                .filter((panel) => !panel.hidden)
-                .map((panel) => panel.dataset.locationPanel),
-              placeholderHidden: document.querySelector('[data-location-placeholder]')?.hidden,
-            }));
+            const locatorState = await page.evaluate((expectedPanel) => {
+              const heading = document.querySelector(`[data-location-panel="${expectedPanel}"] h3`);
+              return ({
+                activePins: document.querySelectorAll('.alpha-map-pin.is-active').length,
+                visiblePanels: [...document.querySelectorAll('[data-location-panel]')]
+                  .filter((panel) => !panel.hidden)
+                  .map((panel) => panel.dataset.locationPanel),
+                placeholderHidden: document.querySelector('[data-location-placeholder]')?.hidden,
+                headingFitsOneLine: Boolean(heading && heading.scrollWidth <= heading.clientWidth + 1 && getComputedStyle(heading).whiteSpace === 'nowrap'),
+              });
+            }, panelName);
 
             if (locatorState.activePins !== 1 || locatorState.visiblePanels.length !== 1 || locatorState.visiblePanels[0] !== panelName || !locatorState.placeholderHidden) {
               failures.push(`${viewport.name} ${route}: ${buttonName} did not release only its matching location panel`);
             }
+            if (!locatorState.headingFitsOneLine) failures.push(`${viewport.name} ${route}: ${buttonName} location heading does not fit on one line`);
           }
         }
 

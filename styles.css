@@ -759,6 +759,7 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
     rgba(3, 3, 4, .72);
   border: 1px solid rgba(255, 210, 79, .26);
   box-shadow: inset 0 0 60px rgba(0, 0, 0, .42);
+  container-type: inline-size;
   display: grid;
   min-height: 500px;
   overflow: hidden;
@@ -821,10 +822,15 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
   text-transform: uppercase;
 }
 .location-intelligence__panel h3 {
-  font-size: clamp(2.8rem, 7vw, 5.4rem) !important;
-  letter-spacing: -.035em;
+  font-size: clamp(2.15rem, 5vw, 4.5rem) !important;
+  font-size: clamp(2.15rem, 11cqi, 4.5rem) !important;
+  letter-spacing: -.025em;
   margin: 0 0 2rem;
+  max-width: 100%;
+  overflow-wrap: normal;
   text-transform: uppercase;
+  white-space: nowrap;
+  word-break: normal;
 }
 .location-intelligence__label {
   color: #918b7f;
