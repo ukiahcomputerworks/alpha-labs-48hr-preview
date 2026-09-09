@@ -1079,6 +1079,11 @@ body {
   grid-row: 1;
 }
 
+/* The home hero carries the brand mark; omit the duplicate header logo there. */
+body.home .title-area {
+  display: none !important;
+}
+
 .site-title {
   display: block !important;
   float: none !important;
@@ -1571,6 +1576,25 @@ input[type="submit"],
     width: 100% !important;
   }
 
+  body.home .site-header > .wrap {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  body.home .header-widget-area {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+
+  body.home .menu-toggle {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  body.home .nav-primary {
+    grid-row: 2;
+  }
+
   .title-area { min-height: 54px; width: min(510px, 65vw) !important; }
   .site-title a { height: 48px; width: min(390px, 42vw); }
   .site-description { display: none; }
@@ -1722,6 +1746,10 @@ input[type="submit"],
   .header-widget-area { grid-column: 1; grid-row: 2; }
   .menu-toggle { grid-column: 2; grid-row: 2; }
   .nav-primary { grid-row: 3; }
+
+  body.home .header-widget-area { grid-column: 1; grid-row: 1; }
+  body.home .menu-toggle { grid-column: 2; grid-row: 1; }
+  body.home .nav-primary { grid-row: 2; }
 
   #client-connect a {
     font-size: .59rem !important;

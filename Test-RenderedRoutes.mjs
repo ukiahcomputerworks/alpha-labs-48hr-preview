@@ -31,6 +31,8 @@ try {
           const titleStyle = title ? getComputedStyle(title) : null;
           const headerLogo = document.querySelector('.site-title a');
           const logoRect = headerLogo?.getBoundingClientRect();
+          const heroLogo = document.querySelector('.alpha-after-dark__logo');
+          const heroLogoRect = heroLogo?.getBoundingClientRect();
           const localBrokenImages = [...document.images].filter((image) => {
             if (!image.complete || image.naturalWidth > 0) return false;
             const source = image.currentSrc || image.src;
@@ -43,6 +45,7 @@ try {
             documentWidth: document.documentElement.scrollWidth,
             localBrokenImages,
             headerLogoVisible: Boolean(logoRect && logoRect.width > 0 && logoRect.height > 0),
+            heroLogoVisible: Boolean(heroLogoRect && heroLogoRect.width > 0 && heroLogoRect.height > 0),
             headerPresent: Boolean(document.querySelector('.site-header')),
             titleFont: titleStyle?.fontFamily || null,
             titleWeight: titleStyle?.fontWeight || null,
@@ -56,7 +59,9 @@ try {
         if (state.documentWidth > state.viewportWidth) failures.push(`${viewport.name} ${route}: horizontal overflow ${state.documentWidth}/${state.viewportWidth}`);
         if (state.localBrokenImages) failures.push(`${viewport.name} ${route}: ${state.localBrokenImages} broken local image(s)`);
         const headerlessLandingTemplate = route === '/landing-page/' && !state.headerPresent;
-        if (!state.headerLogoVisible && !headerlessLandingTemplate) failures.push(`${viewport.name} ${route}: header logo is not visible`);
+        if (!state.headerLogoVisible && !headerlessLandingTemplate && route !== '/') failures.push(`${viewport.name} ${route}: header logo is not visible`);
+        if (route === '/' && state.headerLogoVisible) failures.push(`${viewport.name} ${route}: redundant home header logo is visible`);
+        if (route === '/' && !state.heroLogoVisible) failures.push(`${viewport.name} ${route}: home hero logo is not visible`);
         if (state.visibleStreetViewLabels) failures.push(`${viewport.name} ${route}: standalone Street View label remains`);
 
         if (route === '/contact-us-alpha-analytical-laboratories-inc/') {
