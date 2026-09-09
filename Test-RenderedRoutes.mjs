@@ -25,7 +25,7 @@ try {
 
       try {
         const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-        await page.waitForTimeout(100);
+        await page.waitForTimeout(route === '/' ? 900 : 100);
         const state = await page.evaluate(() => {
           const title = document.querySelector('.entry-title, .entry-content h1');
           const titleStyle = title ? getComputedStyle(title) : null;
