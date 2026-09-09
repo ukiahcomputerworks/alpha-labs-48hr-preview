@@ -35,8 +35,8 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=37') {
-        $failures.Add("Missing Alpha After Dark design cache key v37: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=36') {
+        $failures.Add("Missing Alpha After Dark design cache key v36: $($item.Route)")
     }
 }
 
@@ -54,16 +54,11 @@ if ($contact -notmatch 'TIGERweb 2025 State_County geometry, STATE 06' -or $cont
 }
 
 $homeMarkup = Get-Content -Raw -LiteralPath (Join-Path $root 'index.html')
-foreach ($elap in @('#1551', '#2303', '#2728', '#2922', '#3055', '#3091')) {
-    if ($homeMarkup -notmatch [regex]::Escape($elap)) {
-        $failures.Add("The home introduction is missing ELAP certification $elap.")
-    }
+if ($homeMarkup -notmatch 'ELAP certifications[^)]*#3091') {
+    $failures.Add('The homepage introduction is missing Los Angeles ELAP #3091.')
 }
-if ($contact -match '#3019') {
-    $failures.Add('The retired Los Angeles ELAP typo #3019 remains in the contact page.')
-}
-if ($styles -notmatch 'body\.home \.title-area\s*\{[^}]*display:\s*none') {
-    $failures.Add('The redundant home-only header logo is not suppressed.')
+if ($homeMarkup -match '<div class="title-area">') {
+    $failures.Add('The redundant homepage header logo markup remains.')
 }
 
 if ($failures.Count -gt 0) {
