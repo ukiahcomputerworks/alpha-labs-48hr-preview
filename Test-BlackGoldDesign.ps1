@@ -38,8 +38,8 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=39') {
-        $failures.Add("Missing Alpha After Dark design cache key v39: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=40') {
+        $failures.Add("Missing Alpha After Dark design cache key v40: $($item.Route)")
     }
     if ($html -notmatch 'script\.js\?v=11') {
         $failures.Add("Missing Alpha After Dark behavior cache key v11: $($item.Route)")
@@ -74,6 +74,9 @@ if ($styles -notmatch 'body\.page-id-13 \.entry\s*\{[\s\S]*?border:\s*0\s*!impor
 }
 if ($script -notmatch 'centerDesktopDossier' -or $script -notmatch "behavior:\s*'smooth'") {
     $failures.Add('The regulatory desktop dossier-centering behavior is missing.')
+}
+if ($styles -notmatch '@media \(min-width: 901px\) and \(max-height: 900px\)' -or $styles -notmatch 'agency-intelligence__panel \{ animation: agency-file-release \.38s ease both; padding: \.5rem 0 \.25rem; \}') {
+    $failures.Add('The compact-height regulatory dossier treatment is missing.')
 }
 foreach ($asset in @('epa.jpg', 'cdph.jpg', 'calrecycle.gif', 'water-board.jpg', 'dtsc.jpg', 'carb.jpg')) {
     if (-not (Test-Path -LiteralPath (Join-Path $root "assets\regulatory\$asset") -PathType Leaf)) {

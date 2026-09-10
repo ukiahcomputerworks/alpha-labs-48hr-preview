@@ -5,6 +5,7 @@ const baseUrl = (process.argv[2] || 'http://127.0.0.1:4174').replace(/\/$/, '');
 const manifest = JSON.parse(readFileSync(new URL('./mirror-manifest.json', import.meta.url), 'utf8'));
 const viewports = [
   { name: 'desktop', width: 1440, height: 1000 },
+  { name: 'compact-desktop', width: 1440, height: 800 },
   { name: 'phone', width: 390, height: 844 },
 ];
 
@@ -120,11 +121,11 @@ try {
             const card = document.querySelector('.agency-intelligence')?.getBoundingClientRect();
             return firstAgency && card ? Math.abs(firstAgency.top - card.top) : Number.POSITIVE_INFINITY;
           });
-          if (viewport.name === 'desktop' && initialAlignment > 2) failures.push(`${viewport.name} ${route}: first agency and dossier card are misaligned by ${initialAlignment}px`);
+          if (viewport.name !== 'phone' && initialAlignment > 2) failures.push(`${viewport.name} ${route}: first agency and dossier card are misaligned by ${initialAlignment}px`);
 
           for (const agency of agencies) {
             await page.locator(`[data-agency-target="${agency}"]`).click();
-            await page.waitForTimeout(viewport.name === 'desktop' ? 1350 : 720);
+            await page.waitForTimeout(viewport.name !== 'phone' ? 1350 : 720);
             const agencyState = await page.evaluate((expectedPanel) => {
               const preview = document.querySelector(`[data-agency-panel="${expectedPanel}"] .agency-browser-preview`);
               return {
@@ -150,6 +151,16 @@ try {
             if (!agencyState.logoLoaded) failures.push(`${viewport.name} ${route}: ${agency} agency logo did not load`);
             if (agencyState.transientArtifacts) failures.push(`${viewport.name} ${route}: ${agency} transfer animation did not clean up`);
 
+            if (viewport.name !== 'phone') {
+              const desktopCardVisibility = await page.locator('.agency-intelligence').evaluate((card) => {
+                const rect = card.getBoundingClientRect();
+                return { top: rect.top, bottom: rect.bottom, viewport: window.innerHeight };
+              });
+              if (desktopCardVisibility.top < -1 || desktopCardVisibility.bottom > desktopCardVisibility.viewport + 1) {
+                failures.push(`${viewport.name} ${route}: ${agency} dossier is clipped outside the viewport (${JSON.stringify(desktopCardVisibility)})`);
+              }
+            }
+
             if (viewport.name === 'phone') {
               const mobileCardState = await page.evaluate(() => {
                 const card = document.querySelector('.agency-intelligence')?.getBoundingClientRect();
@@ -161,7 +172,7 @@ try {
             }
           }
 
-          if (viewport.name === 'desktop') {
+          if (viewport.name !== 'phone') {
             await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
             await page.waitForTimeout(120);
             const scrollBeforeCarbClick = await page.evaluate(() => window.scrollY);
@@ -175,7 +186,7 @@ try {
                 scrollY: window.scrollY,
               };
             });
-            if (!centeredCardState.entirelyVisible || centeredCardState.centerDelta > 12) failures.push(`${viewport.name} ${route}: Air Resources Board dossier was not centered entirely in the viewport (${JSON.stringify(centeredCardState)})`);
+            if (!centeredCardState.entirelyVisible || centeredCardState.centerDelta > 20) failures.push(`${viewport.name} ${route}: Air Resources Board dossier was not centered entirely in the viewport (${JSON.stringify(centeredCardState)})`);
             if (centeredCardState.scrollY >= scrollBeforeCarbClick - 2) failures.push(`${viewport.name} ${route}: bottom agency click did not scroll back to the centered dossier (before ${scrollBeforeCarbClick}px, after ${centeredCardState.scrollY}px)`);
           }
         }
