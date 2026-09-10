@@ -88,11 +88,16 @@ foreach ($asset in @('epa.jpg', 'cdph.jpg', 'calrecycle.gif', 'water-board.jpg',
 }
 
 $homeMarkup = Get-Content -Raw -LiteralPath (Join-Path $root 'index.html')
-if ($homeMarkup -notmatch 'ELAP certifications[^)]*#3091') {
-    $failures.Add('The homepage introduction is missing Los Angeles ELAP #3091.')
-}
 if ($homeMarkup -match '<div class="title-area">') {
     $failures.Add('The redundant homepage header logo markup remains.')
+}
+foreach ($homeMarker in @('California&#8217;s quiet powerhouse for environmental analysis', 'The VIP Treatment&mdash;from Homeowners to the EPA', 'Six premier California locations', 'Over 25,000 square feet of state-of-the-art processing power', 'Fully ELAP-certified across Microbiology, Wet Chemistry, and Organic/Inorganic Chemistry', 'We don&#8217;t just run tests; we craft certainty', 'data-home-business-cta')) {
+    if (-not $homeMarkup.Contains($homeMarker)) {
+        $failures.Add("The approved homepage story is missing: $homeMarker")
+    }
+}
+if ($homeMarkup -match 'feedback-btn\.png' -or $homeMarkup -match 'is a premier California \(ELAP certifications') {
+    $failures.Add('Superseded homepage copy or the obsolete feedback image remains.')
 }
 
 if ($failures.Count -gt 0) {

@@ -65,6 +65,24 @@ try {
         if (route === '/' && !state.heroLogoVisible) failures.push(`${viewport.name} ${route}: home hero logo is not visible`);
         if (state.visibleStreetViewLabels) failures.push(`${viewport.name} ${route}: standalone Street View label remains`);
 
+        if (route === '/') {
+          const homeStoryState = await page.evaluate(() => {
+            const hero = document.querySelector('.alpha-after-dark');
+            const cta = document.querySelector('[data-home-business-cta]');
+            const ctaStyle = cta && getComputedStyle(cta);
+            return {
+              heroTitleMarkup: hero?.querySelector('h1')?.innerHTML || '',
+              storyText: document.querySelector('.entry-content')?.textContent.replace(/\s+/g, ' ').trim() || '',
+              ctaHref: cta?.href || '',
+              ctaIsGold: Boolean(ctaStyle && ctaStyle.backgroundImage.includes('gradient')),
+              ctaIsAngled: Boolean(ctaStyle && ctaStyle.clipPath !== 'none'),
+            };
+          });
+          if (homeStoryState.heroTitleMarkup !== "The science is serious.<br><span>The experience doesn't have to be.</span>") failures.push(`${viewport.name} ${route}: approved Alpha After Dark hero changed`);
+          if (!homeStoryState.storyText.includes("Since 1975, Alpha Labs has been California’s quiet powerhouse") || !homeStoryState.storyText.includes("We don’t just run tests; we craft certainty.")) failures.push(`${viewport.name} ${route}: approved homepage story is incomplete`);
+          if (!homeStoryState.ctaHref.endsWith('/contact-us-alpha-analytical-laboratories-inc/') || !homeStoryState.ctaIsGold || !homeStoryState.ctaIsAngled) failures.push(`${viewport.name} ${route}: homepage business CTA is not the shared gold angled control`);
+        }
+
         if (route === '/contact-us-alpha-analytical-laboratories-inc/') {
           const mapWidth = await page.locator('.california-map').evaluate((map) => map.getBoundingClientRect().width);
           const expectedMapWidth = viewport.name === 'phone' ? 320.32 : 358.4;
