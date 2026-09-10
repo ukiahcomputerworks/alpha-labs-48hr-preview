@@ -38,8 +38,8 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=42') {
-        $failures.Add("Missing Alpha After Dark design cache key v42: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=43') {
+        $failures.Add("Missing Alpha After Dark design cache key v43: $($item.Route)")
     }
     if ($html -notmatch 'script\.js\?v=11') {
         $failures.Add("Missing Alpha After Dark behavior cache key v11: $($item.Route)")
@@ -105,6 +105,15 @@ if (-not $homeHeadingRule.Success -or $homeHeadingRule.Groups['declarations'].Va
 }
 if ($styles -notmatch 'body\.home \.entry-content > p,[\s\S]*?body\.home \.entry-content li\s*\{[^}]*color:\s*#fff\s*!important;[^}]*font-size:\s*1\.125rem\s*!important;') {
     $failures.Add('Homepage body copy is missing its larger solid-white reading treatment.')
+}
+if ($styles -notmatch '\.alpha-action-rail__number,[\s\S]*?\.alpha-action-rail strong\s*\{[^}]*alpha-contact-link-shimmer[^}]*linear-gradient') {
+    $failures.Add('Homepage action numbers and prompts are missing their metallic-gold shimmer treatment.')
+}
+if ($styles -notmatch '\.alpha-action-rail small\s*\{[^}]*color:\s*#fff\s*!important;[^}]*font-size:\s*\.82rem;') {
+    $failures.Add('Homepage action supporting lines are missing their larger solid-white treatment.')
+}
+if (@([regex]::Matches($styles, '\.alpha-action-rail > a:nth-child\([1-4]\) :is\(\.alpha-action-rail__number, strong\) \{ animation-delay:')).Count -ne 4) {
+    $failures.Add('Homepage action shimmers are not independently staggered across all four cards.')
 }
 
 if ($failures.Count -gt 0) {

@@ -2032,11 +2032,31 @@ button::after, .button::after { animation-duration: 5.1s; animation-delay: -2.7s
 .alpha-action-rail > a:hover::after,
 .alpha-action-rail > a:focus-visible::after { transform: scaleX(1); }
 
-.alpha-action-rail__number {
+.alpha-action-rail__number,
+.alpha-action-rail strong {
   -webkit-background-clip: text;
-  background: var(--alpha-gold-material);
+  -webkit-text-fill-color: transparent;
+  animation: alpha-contact-link-shimmer 5.8s ease-in-out infinite;
   background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(
+    105deg,
+    #8a5708 0%,
+    #ffd24f 28%,
+    #fff8cf 44%,
+    #ffd24f 56%,
+    #8a5708 100%
+  );
+  background-position: 115% center;
+  background-size: 240% 100%;
+  color: var(--alpha-gold-bright) !important;
+}
+
+.alpha-action-rail > a:nth-child(1) :is(.alpha-action-rail__number, strong) { animation-delay: -.8s; }
+.alpha-action-rail > a:nth-child(2) :is(.alpha-action-rail__number, strong) { animation-delay: -2.1s; }
+.alpha-action-rail > a:nth-child(3) :is(.alpha-action-rail__number, strong) { animation-delay: -3.4s; }
+.alpha-action-rail > a:nth-child(4) :is(.alpha-action-rail__number, strong) { animation-delay: -4.7s; }
+
+.alpha-action-rail__number {
   font-family: var(--alpha-display);
   font-size: 1.6rem;
   font-weight: 700;
@@ -2049,7 +2069,6 @@ button::after, .button::after { animation-duration: 5.1s; animation-delay: -2.7s
 }
 
 .alpha-action-rail strong {
-  color: var(--alpha-ivory);
   font-family: var(--alpha-display);
   font-size: .88rem;
   letter-spacing: .04em;
@@ -2058,8 +2077,8 @@ button::after, .button::after { animation-duration: 5.1s; animation-delay: -2.7s
 }
 
 .alpha-action-rail small {
-  color: var(--alpha-muted);
-  font-size: .7rem;
+  color: #fff !important;
+  font-size: .82rem;
   line-height: 1.35;
   margin-top: .35rem;
 }

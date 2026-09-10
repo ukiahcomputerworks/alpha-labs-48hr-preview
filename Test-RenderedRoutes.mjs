@@ -73,6 +73,7 @@ try {
             const homeHeading = document.querySelector('.entry-content > h1');
             const specsHeading = document.querySelector('.entry-content > h2');
             const bodyCopy = [...document.querySelectorAll('.entry-content > p, .entry-content li')];
+            const actionCards = [...document.querySelectorAll('.alpha-action-rail > a')];
             const referenceH1 = document.createElement('h1');
             const referenceH2 = document.createElement('h2');
             referenceH1.style.cssText = referenceH2.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none';
@@ -86,6 +87,18 @@ try {
               const style = getComputedStyle(node);
               return style.color === 'rgb(255, 255, 255)' && parseFloat(style.fontSize) > bodyFontSize;
             });
+            const actionRailTreatment = actionCards.length === 4 && actionCards.every((card) => {
+              const numberStyle = getComputedStyle(card.querySelector('.alpha-action-rail__number'));
+              const promptStyle = getComputedStyle(card.querySelector('strong'));
+              const supportingStyle = getComputedStyle(card.querySelector('small'));
+              return numberStyle.backgroundImage.includes('gradient')
+                && promptStyle.backgroundImage.includes('gradient')
+                && numberStyle.webkitTextFillColor === 'rgba(0, 0, 0, 0)'
+                && promptStyle.webkitTextFillColor === 'rgba(0, 0, 0, 0)'
+                && supportingStyle.color === 'rgb(255, 255, 255)'
+                && parseFloat(supportingStyle.fontSize) >= 13;
+            });
+            const actionRailStaggered = new Set(actionCards.map((card) => getComputedStyle(card.querySelector('strong')).animationDelay)).size === 4;
             referenceH1.remove();
             referenceH2.remove();
             return {
@@ -97,6 +110,8 @@ try {
               headingsAreGold: Boolean(homeHeadingStyle && specsHeadingStyle && homeHeadingStyle.backgroundImage.includes('gradient') && specsHeadingStyle.backgroundImage.includes('gradient') && homeHeadingStyle.webkitTextFillColor === 'rgba(0, 0, 0, 0)' && specsHeadingStyle.webkitTextFillColor === 'rgba(0, 0, 0, 0)'),
               headingSizesPreserved: Boolean(homeHeadingStyle && specsHeadingStyle && homeHeadingStyle.fontSize === referenceH1Size && specsHeadingStyle.fontSize === referenceH2Size),
               bodyCopyReadable,
+              actionRailTreatment,
+              actionRailStaggered,
             };
           });
           if (homeStoryState.heroTitleMarkup !== "The science is serious.<br><span>The experience doesn't have to be.</span>") failures.push(`${viewport.name} ${route}: approved Alpha After Dark hero changed`);
@@ -104,6 +119,7 @@ try {
           if (!homeStoryState.ctaHref.endsWith('/contact-us-alpha-analytical-laboratories-inc/') || !homeStoryState.ctaIsGold || !homeStoryState.ctaIsAngled) failures.push(`${viewport.name} ${route}: homepage business CTA is not the shared gold angled control`);
           if (!homeStoryState.headingsAreGold || !homeStoryState.headingSizesPreserved) failures.push(`${viewport.name} ${route}: homepage headings are not gold or their established sizes changed`);
           if (!homeStoryState.bodyCopyReadable) failures.push(`${viewport.name} ${route}: homepage body copy is not solid white and larger than the base text`);
+          if (!homeStoryState.actionRailTreatment || !homeStoryState.actionRailStaggered) failures.push(`${viewport.name} ${route}: homepage action rail is missing the gold-and-white treatment or independent shimmer timing`);
         }
 
         if (route === '/contact-us-alpha-analytical-laboratories-inc/') {
