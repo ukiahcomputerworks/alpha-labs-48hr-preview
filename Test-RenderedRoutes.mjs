@@ -66,6 +66,12 @@ try {
         if (state.visibleStreetViewLabels) failures.push(`${viewport.name} ${route}: standalone Street View label remains`);
 
         if (route === '/contact-us-alpha-analytical-laboratories-inc/') {
+          const mapWidth = await page.locator('.california-map').evaluate((map) => map.getBoundingClientRect().width);
+          const expectedMapWidth = viewport.name === 'phone' ? 320.32 : 358.4;
+          if (Math.abs(mapWidth - expectedMapWidth) > 1) {
+            failures.push(`${viewport.name} ${route}: California locator width is ${mapWidth}px instead of ${expectedMapWidth}px`);
+          }
+
           const locations = [
             ['Ukiah', 'ukiah'],
             ['Petaluma', 'petaluma'],

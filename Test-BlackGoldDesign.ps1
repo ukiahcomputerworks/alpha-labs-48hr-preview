@@ -38,8 +38,8 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=40') {
-        $failures.Add("Missing Alpha After Dark design cache key v40: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=41') {
+        $failures.Add("Missing Alpha After Dark design cache key v41: $($item.Route)")
     }
     if ($html -notmatch 'script\.js\?v=11') {
         $failures.Add("Missing Alpha After Dark behavior cache key v11: $($item.Route)")
@@ -60,6 +60,9 @@ if ($careers -notmatch 'No information is transmitted, stored, or sent') {
 $contact = Get-Content -Raw -LiteralPath (Join-Path $root 'contact-us-alpha-analytical-laboratories-inc\index.html')
 if ($contact -notmatch 'TIGERweb 2025 State_County geometry, STATE 06' -or $contact -notmatch 'id="california-boundary"' -or $contact -notmatch 'california-map__shine-sweep') {
     $failures.Add('The official Census-derived California locator or its clipped shimmer is missing.')
+}
+if ($styles -notmatch '\.california-map\s*\{[\s\S]*?transform:\s*scale\(1\.12\);' -or $styles -notmatch 'transform-origin:\s*center;') {
+    $failures.Add('The California locator is missing its approved 12 percent proportional enlargement.')
 }
 
 $regulatory = Get-Content -Raw -LiteralPath (Join-Path $root 'regulatory\index.html')
