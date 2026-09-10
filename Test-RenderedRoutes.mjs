@@ -100,6 +100,13 @@ try {
           const initialPlaceholderVisible = await page.locator('[data-agency-placeholder]').isVisible();
           if (!initialPlaceholderVisible) failures.push(`${viewport.name} ${route}: sealed agency placeholder is not visible initially`);
 
+          const initialAlignment = await page.evaluate(() => {
+            const firstAgency = document.querySelector('[data-agency-target]')?.getBoundingClientRect();
+            const card = document.querySelector('.agency-intelligence')?.getBoundingClientRect();
+            return firstAgency && card ? Math.abs(firstAgency.top - card.top) : Number.POSITIVE_INFINITY;
+          });
+          if (viewport.name === 'desktop' && initialAlignment > 2) failures.push(`${viewport.name} ${route}: first agency and dossier card are misaligned by ${initialAlignment}px`);
+
           for (const agency of agencies) {
             await page.locator(`[data-agency-target="${agency}"]`).click();
             await page.waitForTimeout(720);
@@ -127,6 +134,23 @@ try {
             }
             if (!agencyState.logoLoaded) failures.push(`${viewport.name} ${route}: ${agency} agency logo did not load`);
             if (agencyState.transientArtifacts) failures.push(`${viewport.name} ${route}: ${agency} transfer animation did not clean up`);
+
+            if (viewport.name === 'phone') {
+              const mobileCardState = await page.evaluate(() => {
+                const card = document.querySelector('.agency-intelligence')?.getBoundingClientRect();
+                return card ? { top: card.top, viewport: innerHeight } : null;
+              });
+              if (!mobileCardState || mobileCardState.top < -2 || mobileCardState.top >= mobileCardState.viewport) {
+                failures.push(`${viewport.name} ${route}: ${agency} did not bring the released dossier into view`);
+              }
+            }
+          }
+
+          if (viewport.name === 'desktop') {
+            await page.locator('[data-agency-target="carb"]').scrollIntoViewIfNeeded();
+            await page.waitForTimeout(120);
+            const stickyCardTop = await page.locator('.agency-intelligence').evaluate((card) => card.getBoundingClientRect().top);
+            if (stickyCardTop < -8 || stickyCardTop > 32) failures.push(`${viewport.name} ${route}: dossier card did not remain sticky while the agency rail scrolled (${stickyCardTop}px)`);
           }
         }
 

@@ -110,6 +110,15 @@ document.querySelectorAll('[data-agency-vault]').forEach((vault) => {
       void intelligenceCard.offsetWidth;
       intelligenceCard.classList.add('is-receiving');
       window.setTimeout(() => intelligenceCard.classList.remove('is-receiving'), 620);
+
+      if (window.matchMedia('(max-width: 900px)').matches) {
+        window.setTimeout(() => {
+          intelligenceCard.scrollIntoView({
+            behavior: reducedMotion.matches ? 'auto' : 'smooth',
+            block: 'start'
+          });
+        }, reducedMotion.matches ? 0 : 80);
+      }
     }
   };
 

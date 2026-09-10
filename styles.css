@@ -31,26 +31,76 @@
   border: 1px solid rgba(255, 210, 79, .38);
   clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 28px 100%, 0 calc(100% - 28px));
   display: grid;
-  gap: clamp(1.5rem, 4vw, 4rem);
+  column-gap: clamp(1.5rem, 4vw, 4rem);
   grid-template-columns: minmax(280px, .82fr) minmax(360px, 1.18fr);
-  margin: 2rem 0 4rem;
-  overflow: hidden;
+  margin: 2rem 0 1.5rem;
+  overflow: visible;
   padding: clamp(1.1rem, 3.5vw, 3.5rem);
   position: relative;
+  row-gap: 1.25rem;
 }
 
 .agency-vault::before {
   background: linear-gradient(180deg, transparent, var(--alpha-gold-bright), transparent);
   content: "";
-  height: 72%;
+  bottom: 3rem;
   left: 47%;
   opacity: .34;
   position: absolute;
-  top: 14%;
+  top: 12rem;
   width: 1px;
 }
 
 .agency-index { min-width: 0; position: relative; z-index: 2; }
+
+.agency-vault__masthead {
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 210, 79, .42);
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 0 .35rem .7rem;
+  position: relative;
+  z-index: 2;
+}
+
+.agency-vault__masthead::after {
+  background: linear-gradient(90deg, transparent, #fff1ad, #d69114, transparent);
+  bottom: -1px;
+  content: "";
+  height: 2px;
+  left: 0;
+  position: absolute;
+  width: 42%;
+}
+
+.agency-vault__system {
+  color: var(--alpha-gold) !important;
+  font-family: var(--alpha-display) !important;
+  font-size: .68rem !important;
+  font-weight: 700;
+  letter-spacing: .15em;
+  margin: 0 !important;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.agency-vault__poster {
+  background:
+    linear-gradient(90deg, transparent, rgba(214, 145, 20, .12) 24%, rgba(214, 145, 20, .12) 76%, transparent),
+    #070707;
+  border-bottom: 1px solid rgba(255, 210, 79, .48);
+  border-top: 1px solid rgba(255, 210, 79, .48);
+  clip-path: polygon(18px 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 18px 100%, 0 50%);
+  grid-column: 1 / -1;
+  justify-self: center;
+  max-width: 720px;
+  padding: .85rem clamp(2.4rem, 6vw, 5rem);
+  text-align: center;
+  width: min(100%, 720px);
+  z-index: 2;
+}
 
 .agency-index__eyebrow,
 .agency-intelligence__status {
@@ -59,20 +109,22 @@
   font-size: .74rem !important;
   font-weight: 700;
   letter-spacing: .22em;
-  margin: 0 0 .65rem !important;
+  margin: 0 !important;
   text-transform: uppercase;
 }
 
-.agency-index h2 {
+.agency-vault__poster h2 {
   font-size: clamp(2rem, 4vw, 3.4rem) !important;
-  margin: 0 0 .55rem !important;
+  letter-spacing: .08em;
+  line-height: .92 !important;
+  margin: 0 !important;
   text-transform: uppercase;
 }
 
 .agency-index__intro {
   color: #cfc7b8 !important;
-  margin: 0 0 1.5rem !important;
-  max-width: 34rem;
+  margin: .45rem auto 0 !important;
+  max-width: 38rem;
 }
 
 .agency-index__rail {
@@ -373,7 +425,7 @@
 .agency-browser-preview__body img { justify-self: center; max-height: 96px; }
 
 .agency-browser-preview__body strong {
-  color: #080808;
+  color: #080808 !important;
   font-family: var(--alpha-display);
   font-size: clamp(1rem, 2vw, 1.35rem);
   letter-spacing: .05em;
@@ -411,6 +463,12 @@
 @media (max-width: 560px) {
   .agency-vault { clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); margin-inline: -.35rem; padding: 1.1rem .8rem; }
   .agency-index__rail { padding-left: .65rem; }
+  .agency-vault__masthead { gap: .75rem; }
+  .agency-index__eyebrow,
+  .agency-vault__system { font-size: .58rem !important; letter-spacing: .12em; }
+  .agency-vault__poster { padding: .8rem 1.6rem; }
+  .agency-vault__poster h2 { font-size: clamp(1.65rem, 9vw, 2.35rem) !important; }
+  .agency-index__intro { font-size: .88rem !important; line-height: 1.45 !important; }
   .agency-tab,
   .agency-tab:nth-child(even) { grid-template-columns: auto 82px minmax(0, 1fr); margin-left: 0; width: 100%; }
   .agency-tab:nth-child(even) { translate: .55rem 0; width: calc(100% - .55rem); }
@@ -423,6 +481,8 @@
   .agency-intelligence__panel h2 { font-size: clamp(1.85rem, 11vw, 3rem) !important; }
   .agency-browser-preview__body { grid-template-columns: 74px minmax(0, 1fr); min-height: 145px; padding: 1rem; }
 }
+
+body.page-id-13 .entry-header::after { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .agency-intelligence__panel { animation: none; }
