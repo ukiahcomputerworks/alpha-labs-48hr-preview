@@ -5,13 +5,16 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $manifestPath = Join-Path $root 'mirror-manifest.json'
 $stylesPath = Join-Path $root 'styles.css'
+$scriptPath = Join-Path $root 'script.js'
 $failures = [System.Collections.Generic.List[string]]::new()
 
 if (-not (Test-Path -LiteralPath $manifestPath)) { throw 'mirror-manifest.json is missing.' }
 if (-not (Test-Path -LiteralPath $stylesPath)) { throw 'styles.css is missing.' }
+if (-not (Test-Path -LiteralPath $scriptPath)) { throw 'script.js is missing.' }
 
 $manifest = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
 $styles = Get-Content -Raw -LiteralPath $stylesPath
+$script = Get-Content -Raw -LiteralPath $scriptPath
 
 if (@($manifest).Count -ne 35) {
     $failures.Add("Expected 35 retained routes; found $(@($manifest).Count).")
@@ -35,11 +38,11 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=38') {
-        $failures.Add("Missing Alpha After Dark design cache key v38: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=39') {
+        $failures.Add("Missing Alpha After Dark design cache key v39: $($item.Route)")
     }
-    if ($html -notmatch 'script\.js\?v=10') {
-        $failures.Add("Missing Alpha After Dark behavior cache key v10: $($item.Route)")
+    if ($html -notmatch 'script\.js\?v=11') {
+        $failures.Add("Missing Alpha After Dark behavior cache key v11: $($item.Route)")
     }
     if ($html -match 'PDF Download[^<]*(?:requires|Requires)|Adobe Acrobat Reader|get\.adobe\.com/reader') {
         $failures.Add("Obsolete Adobe Reader requirement remains: $($item.Route)")
@@ -65,6 +68,12 @@ if ($regulatory -notmatch 'data-agency-vault' -or @([regex]::Matches($regulatory
 }
 if ($regulatory -notmatch 'agency-vault__masthead' -or $regulatory -notmatch 'agency-vault__poster') {
     $failures.Add('The compact regulatory intelligence masthead or selector poster is missing.')
+}
+if ($styles -notmatch 'body\.page-id-13 \.entry\s*\{[\s\S]*?border:\s*0\s*!important' -or $styles -notmatch 'agency-vault__masthead::before') {
+    $failures.Add('The regulatory outer-frame removal or top-rule masthead treatment is missing.')
+}
+if ($script -notmatch 'centerDesktopDossier' -or $script -notmatch "behavior:\s*'smooth'") {
+    $failures.Add('The regulatory desktop dossier-centering behavior is missing.')
 }
 foreach ($asset in @('epa.jpg', 'cdph.jpg', 'calrecycle.gif', 'water-board.jpg', 'dtsc.jpg', 'carb.jpg')) {
     if (-not (Test-Path -LiteralPath (Join-Path $root "assets\regulatory\$asset") -PathType Leaf)) {

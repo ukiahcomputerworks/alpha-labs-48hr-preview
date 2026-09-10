@@ -96,6 +96,41 @@ document.querySelectorAll('[data-agency-vault]').forEach((vault) => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let selectionSequence = 0;
 
+  const centerDesktopDossier = () => new Promise((resolve) => {
+    if (!intelligenceCard || window.matchMedia('(max-width: 900px)').matches) {
+      resolve();
+      return;
+    }
+
+    const cardHeight = intelligenceCard.offsetHeight;
+    const inlinePosition = intelligenceCard.style.position;
+    intelligenceCard.style.position = 'relative';
+    const naturalCardTop = intelligenceCard.getBoundingClientRect().top + window.scrollY;
+    intelligenceCard.style.position = inlinePosition;
+    const viewportTop = Math.max(16, (window.innerHeight - cardHeight) / 2);
+    const maximumScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    const targetScroll = Math.min(maximumScroll, Math.max(0, naturalCardTop - viewportTop));
+
+    if (Math.abs(window.scrollY - targetScroll) < 2 || reducedMotion.matches) {
+      window.scrollTo({ top: targetScroll, behavior: 'auto' });
+      resolve();
+      return;
+    }
+
+    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+    const startedAt = performance.now();
+
+    const waitForScroll = () => {
+      if (Math.abs(window.scrollY - targetScroll) < 3 || performance.now() - startedAt > 700) {
+        resolve();
+        return;
+      }
+      requestAnimationFrame(waitForScroll);
+    };
+
+    requestAnimationFrame(waitForScroll);
+  });
+
   const releasePanel = (selectedAgency) => {
     agencyPanels.forEach((panel) => {
       panel.hidden = panel.dataset.agencyPanel !== selectedAgency;
@@ -204,7 +239,12 @@ document.querySelectorAll('[data-agency-vault]').forEach((vault) => {
         placeholder.hidden = true;
       }
 
-      transmitAgencyMark(button, selectionSequence);
+      const activeSequence = selectionSequence;
+      centerDesktopDossier().then(() => {
+        if (activeSequence === selectionSequence) {
+          transmitAgencyMark(button, activeSequence);
+        }
+      });
     });
   });
 });

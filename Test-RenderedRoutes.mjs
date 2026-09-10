@@ -100,6 +100,21 @@ try {
           const initialPlaceholderVisible = await page.locator('[data-agency-placeholder]').isVisible();
           if (!initialPlaceholderVisible) failures.push(`${viewport.name} ${route}: sealed agency placeholder is not visible initially`);
 
+          const regulatoryFrameState = await page.evaluate(() => {
+            const entry = document.querySelector('.entry');
+            const vault = document.querySelector('.agency-vault');
+            const masthead = document.querySelector('.agency-vault__masthead');
+            const entryStyle = entry && getComputedStyle(entry);
+            const vaultRect = vault && vault.getBoundingClientRect();
+            const mastheadRect = masthead && masthead.getBoundingClientRect();
+            return {
+              outerBorderRemoved: Boolean(entryStyle && parseFloat(entryStyle.borderTopWidth) === 0 && parseFloat(entryStyle.borderRightWidth) === 0 && parseFloat(entryStyle.borderBottomWidth) === 0 && parseFloat(entryStyle.borderLeftWidth) === 0),
+              mastheadCutsTopRule: Boolean(vaultRect && mastheadRect && mastheadRect.top >= vaultRect.top - 1 && mastheadRect.top <= vaultRect.top + 2),
+            };
+          });
+          if (!regulatoryFrameState.outerBorderRemoved) failures.push(`${viewport.name} ${route}: obsolete outer page frame is still visible`);
+          if (!regulatoryFrameState.mastheadCutsTopRule) failures.push(`${viewport.name} ${route}: masthead labels do not interrupt the vault top rule`);
+
           const initialAlignment = await page.evaluate(() => {
             const firstAgency = document.querySelector('[data-agency-target]')?.getBoundingClientRect();
             const card = document.querySelector('.agency-intelligence')?.getBoundingClientRect();
@@ -109,7 +124,7 @@ try {
 
           for (const agency of agencies) {
             await page.locator(`[data-agency-target="${agency}"]`).click();
-            await page.waitForTimeout(720);
+            await page.waitForTimeout(viewport.name === 'desktop' ? 1350 : 720);
             const agencyState = await page.evaluate((expectedPanel) => {
               const preview = document.querySelector(`[data-agency-panel="${expectedPanel}"] .agency-browser-preview`);
               return {
@@ -147,10 +162,21 @@ try {
           }
 
           if (viewport.name === 'desktop') {
-            await page.locator('[data-agency-target="carb"]').scrollIntoViewIfNeeded();
+            await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
             await page.waitForTimeout(120);
-            const stickyCardTop = await page.locator('.agency-intelligence').evaluate((card) => card.getBoundingClientRect().top);
-            if (stickyCardTop < -8 || stickyCardTop > 32) failures.push(`${viewport.name} ${route}: dossier card did not remain sticky while the agency rail scrolled (${stickyCardTop}px)`);
+            const scrollBeforeCarbClick = await page.evaluate(() => window.scrollY);
+            await page.locator('[data-agency-target="carb"]').click();
+            await page.waitForTimeout(1350);
+            const centeredCardState = await page.locator('.agency-intelligence').evaluate((card) => {
+              const rect = card.getBoundingClientRect();
+              return {
+                entirelyVisible: rect.top >= -1 && rect.bottom <= window.innerHeight + 1,
+                centerDelta: Math.abs((rect.top + rect.height / 2) - window.innerHeight / 2),
+                scrollY: window.scrollY,
+              };
+            });
+            if (!centeredCardState.entirelyVisible || centeredCardState.centerDelta > 12) failures.push(`${viewport.name} ${route}: Air Resources Board dossier was not centered entirely in the viewport (${JSON.stringify(centeredCardState)})`);
+            if (centeredCardState.scrollY >= scrollBeforeCarbClick - 2) failures.push(`${viewport.name} ${route}: bottom agency click did not scroll back to the centered dossier (before ${scrollBeforeCarbClick}px, after ${centeredCardState.scrollY}px)`);
           }
         }
 

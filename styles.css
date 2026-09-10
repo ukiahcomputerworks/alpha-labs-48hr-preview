@@ -29,6 +29,7 @@
     radial-gradient(circle at 12% 18%, rgba(214, 145, 20, .13), transparent 28%),
     linear-gradient(145deg, rgba(22, 20, 16, .94), rgba(2, 2, 2, .99) 52%);
   border: 1px solid rgba(255, 210, 79, .38);
+  border-top-color: transparent;
   clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 28px 100%, 0 calc(100% - 28px));
   display: grid;
   column-gap: clamp(1.5rem, 4vw, 4rem);
@@ -55,33 +56,40 @@
 
 .agency-vault__masthead {
   align-items: center;
-  border-bottom: 1px solid rgba(255, 210, 79, .42);
   display: flex;
-  grid-column: 1 / -1;
+  height: 1.8rem;
   justify-content: space-between;
+  left: clamp(1.1rem, 3.5vw, 3.5rem);
   min-width: 0;
-  padding: 0 .35rem .7rem;
-  position: relative;
-  z-index: 2;
+  padding: 0;
+  position: absolute;
+  right: clamp(1.1rem, 3.5vw, 3.5rem);
+  top: 0;
+  z-index: 4;
 }
 
-.agency-vault__masthead::after {
-  background: linear-gradient(90deg, transparent, #fff1ad, #d69114, transparent);
-  bottom: -1px;
+.agency-vault__masthead::before {
+  background: linear-gradient(90deg, rgba(255, 210, 79, .38), #fff1ad 32%, #d69114 68%, rgba(255, 210, 79, .38));
   content: "";
-  height: 2px;
+  height: 1px;
   left: 0;
   position: absolute;
-  width: 42%;
+  right: 0;
+  top: 50%;
+  z-index: -1;
 }
 
+.agency-vault__masthead::after { display: none; }
+
 .agency-vault__system {
+  background: #090806;
   color: var(--alpha-gold) !important;
   font-family: var(--alpha-display) !important;
   font-size: .68rem !important;
   font-weight: 700;
   letter-spacing: .15em;
   margin: 0 !important;
+  padding: .12rem .75rem;
   text-align: right;
   text-transform: uppercase;
 }
@@ -111,6 +119,11 @@
   letter-spacing: .22em;
   margin: 0 !important;
   text-transform: uppercase;
+}
+
+.agency-vault__masthead .agency-index__eyebrow {
+  background: #090806;
+  padding: .12rem .75rem;
 }
 
 .agency-vault__poster h2 {
@@ -482,6 +495,11 @@
   .agency-browser-preview__body { grid-template-columns: 74px minmax(0, 1fr); min-height: 145px; padding: 1rem; }
 }
 
+body.page-id-13 .entry {
+  border: 0 !important;
+}
+
+body.page-id-13 .entry::before,
 body.page-id-13 .entry-header::after { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
