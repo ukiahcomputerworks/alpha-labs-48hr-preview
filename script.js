@@ -87,3 +87,115 @@ if (locationRoom) {
     });
   });
 }
+
+document.querySelectorAll('[data-agency-vault]').forEach((vault) => {
+  const agencyButtons = [...vault.querySelectorAll('[data-agency-target]')];
+  const agencyPanels = [...vault.querySelectorAll('[data-agency-panel]')];
+  const placeholder = vault.querySelector('[data-agency-placeholder]');
+  const intelligenceCard = vault.querySelector('.agency-intelligence');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let selectionSequence = 0;
+
+  const releasePanel = (selectedAgency) => {
+    agencyPanels.forEach((panel) => {
+      panel.hidden = panel.dataset.agencyPanel !== selectedAgency;
+    });
+
+    if (placeholder) {
+      placeholder.hidden = true;
+    }
+
+    if (intelligenceCard) {
+      intelligenceCard.classList.remove('is-receiving');
+      void intelligenceCard.offsetWidth;
+      intelligenceCard.classList.add('is-receiving');
+      window.setTimeout(() => intelligenceCard.classList.remove('is-receiving'), 620);
+    }
+  };
+
+  const transmitAgencyMark = (button, sequence) => {
+    if (!intelligenceCard || reducedMotion.matches) {
+      releasePanel(button.dataset.agencyTarget);
+      return;
+    }
+
+    vault.querySelectorAll('.agency-signal, .agency-transfer-mark').forEach((element) => element.remove());
+
+    const vaultRect = vault.getBoundingClientRect();
+    const logoPlate = button.querySelector('.agency-tab__logo-plate');
+    const logo = logoPlate && logoPlate.querySelector('img');
+    const sourceRect = (logoPlate || button).getBoundingClientRect();
+    const cardRect = intelligenceCard.getBoundingClientRect();
+    const horizontalLayout = cardRect.left > sourceRect.right;
+    const startX = horizontalLayout ? sourceRect.right - vaultRect.left : sourceRect.left + (sourceRect.width / 2) - vaultRect.left;
+    const startY = horizontalLayout ? sourceRect.top + (sourceRect.height / 2) - vaultRect.top : sourceRect.bottom - vaultRect.top;
+    const endX = horizontalLayout ? cardRect.left - vaultRect.left + 18 : cardRect.left + (cardRect.width / 2) - vaultRect.left;
+    const endY = horizontalLayout ? cardRect.top + Math.min(cardRect.height * .32, 220) - vaultRect.top : cardRect.top - vaultRect.top + 22;
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+    const length = Math.hypot(deltaX, deltaY);
+    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+    const signal = document.createElement('span');
+    signal.className = 'agency-signal';
+    signal.setAttribute('aria-hidden', 'true');
+    signal.style.setProperty('--signal-x', `${startX}px`);
+    signal.style.setProperty('--signal-y', `${startY}px`);
+    signal.style.setProperty('--signal-length', `${length}px`);
+    signal.style.setProperty('--signal-angle', `${angle}deg`);
+    vault.append(signal);
+    requestAnimationFrame(() => signal.classList.add('is-travelling'));
+
+    if (logo) {
+      const transfer = document.createElement('span');
+      transfer.className = 'agency-transfer-mark';
+      transfer.setAttribute('aria-hidden', 'true');
+      transfer.style.setProperty('--transfer-x', `${sourceRect.left - vaultRect.left}px`);
+      transfer.style.setProperty('--transfer-y', `${sourceRect.top - vaultRect.top}px`);
+      transfer.style.setProperty('--transfer-width', `${sourceRect.width}px`);
+      transfer.style.setProperty('--transfer-height', `${sourceRect.height}px`);
+      transfer.append(logo.cloneNode(true));
+      vault.append(transfer);
+
+      transfer.animate([
+        { opacity: 0, transform: 'translate(0, 0) scale(.82)' },
+        { opacity: 1, offset: .18, transform: 'translate(0, 0) scale(1)' },
+        { opacity: 1, offset: .7, transform: `translate(${deltaX}px, ${deltaY}px) scale(.72)` },
+        { opacity: 0, transform: `translate(${deltaX}px, ${deltaY}px) scale(.46)` }
+      ], { duration: 500, easing: 'cubic-bezier(.2, .76, .24, 1)', fill: 'forwards' });
+    }
+
+    window.setTimeout(() => {
+      if (sequence === selectionSequence) {
+        releasePanel(button.dataset.agencyTarget);
+      }
+    }, 350);
+
+    window.setTimeout(() => {
+      signal.remove();
+      vault.querySelectorAll('.agency-transfer-mark').forEach((element) => element.remove());
+    }, 560);
+  };
+
+  agencyButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      selectionSequence += 1;
+
+      agencyButtons.forEach((candidate) => {
+        const isSelected = candidate === button;
+        candidate.classList.toggle('is-active', isSelected);
+        candidate.setAttribute('aria-expanded', String(isSelected));
+      });
+
+      agencyPanels.forEach((panel) => {
+        panel.hidden = true;
+      });
+
+      if (placeholder) {
+        placeholder.hidden = true;
+      }
+
+      transmitAgencyMark(button, selectionSequence);
+    });
+  });
+});

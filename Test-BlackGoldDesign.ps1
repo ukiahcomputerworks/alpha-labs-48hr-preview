@@ -35,8 +35,14 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=36') {
-        $failures.Add("Missing Alpha After Dark design cache key v36: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=37') {
+        $failures.Add("Missing Alpha After Dark design cache key v37: $($item.Route)")
+    }
+    if ($html -notmatch 'script\.js\?v=9') {
+        $failures.Add("Missing Alpha After Dark behavior cache key v9: $($item.Route)")
+    }
+    if ($html -match 'PDF Download[^<]*(?:requires|Requires)|Adobe Acrobat Reader|get\.adobe\.com/reader') {
+        $failures.Add("Obsolete Adobe Reader requirement remains: $($item.Route)")
     }
 }
 
@@ -51,6 +57,16 @@ if ($careers -notmatch 'No information is transmitted, stored, or sent') {
 $contact = Get-Content -Raw -LiteralPath (Join-Path $root 'contact-us-alpha-analytical-laboratories-inc\index.html')
 if ($contact -notmatch 'TIGERweb 2025 State_County geometry, STATE 06' -or $contact -notmatch 'id="california-boundary"' -or $contact -notmatch 'california-map__shine-sweep') {
     $failures.Add('The official Census-derived California locator or its clipped shimmer is missing.')
+}
+
+$regulatory = Get-Content -Raw -LiteralPath (Join-Path $root 'regulatory\index.html')
+if ($regulatory -notmatch 'data-agency-vault' -or @([regex]::Matches($regulatory, 'data-agency-target=')).Count -ne 6 -or @([regex]::Matches($regulatory, 'data-agency-panel=')).Count -ne 6) {
+    $failures.Add('The six-agency regulatory vault interaction is incomplete.')
+}
+foreach ($asset in @('epa.jpg', 'cdph.jpg', 'calrecycle.gif', 'water-board.jpg', 'dtsc.jpg', 'carb.jpg')) {
+    if (-not (Test-Path -LiteralPath (Join-Path $root "assets\regulatory\$asset") -PathType Leaf)) {
+        $failures.Add("Missing locally preserved agency logo: $asset")
+    }
 }
 
 $homeMarkup = Get-Content -Raw -LiteralPath (Join-Path $root 'index.html')

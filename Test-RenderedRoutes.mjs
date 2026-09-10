@@ -95,6 +95,41 @@ try {
           }
         }
 
+        if (route === '/regulatory/') {
+          const agencies = ['epa', 'drinking-water', 'calrecycle', 'water-board', 'dtsc', 'carb'];
+          const initialPlaceholderVisible = await page.locator('[data-agency-placeholder]').isVisible();
+          if (!initialPlaceholderVisible) failures.push(`${viewport.name} ${route}: sealed agency placeholder is not visible initially`);
+
+          for (const agency of agencies) {
+            await page.locator(`[data-agency-target="${agency}"]`).click();
+            await page.waitForTimeout(720);
+            const agencyState = await page.evaluate((expectedPanel) => {
+              const preview = document.querySelector(`[data-agency-panel="${expectedPanel}"] .agency-browser-preview`);
+              return {
+                activeTabs: document.querySelectorAll('.agency-tab.is-active').length,
+                visiblePanels: [...document.querySelectorAll('[data-agency-panel]')]
+                  .filter((panel) => !panel.hidden)
+                  .map((panel) => panel.dataset.agencyPanel),
+                placeholderHidden: document.querySelector('[data-agency-placeholder]')?.hidden,
+                placeholderDisplayed: getComputedStyle(document.querySelector('[data-agency-placeholder]')).display !== 'none',
+                previewTarget: preview?.getAttribute('target'),
+                previewRel: preview?.getAttribute('rel') || '',
+                logoLoaded: Boolean(document.querySelector(`[data-agency-target="${expectedPanel}"] img`)?.naturalWidth),
+                transientArtifacts: document.querySelectorAll('.agency-signal, .agency-transfer-mark').length,
+              };
+            }, agency);
+
+            if (agencyState.activeTabs !== 1 || agencyState.visiblePanels.length !== 1 || agencyState.visiblePanels[0] !== agency || !agencyState.placeholderHidden || agencyState.placeholderDisplayed) {
+              failures.push(`${viewport.name} ${route}: ${agency} did not release only its matching agency dossier`);
+            }
+            if (agencyState.previewTarget !== '_blank' || !agencyState.previewRel.includes('noopener') || !agencyState.previewRel.includes('noreferrer')) {
+              failures.push(`${viewport.name} ${route}: ${agency} official-site preview is not safely opened in a new tab`);
+            }
+            if (!agencyState.logoLoaded) failures.push(`${viewport.name} ${route}: ${agency} agency logo did not load`);
+            if (agencyState.transientArtifacts) failures.push(`${viewport.name} ${route}: ${agency} transfer animation did not clean up`);
+          }
+        }
+
         results.push({ viewport: viewport.name, route, ...state });
       } catch (error) {
         failures.push(`${viewport.name} ${route}: ${error.message}`);
