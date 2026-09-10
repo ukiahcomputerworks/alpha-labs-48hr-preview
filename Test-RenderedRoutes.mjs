@@ -70,17 +70,40 @@ try {
             const hero = document.querySelector('.alpha-after-dark');
             const cta = document.querySelector('[data-home-business-cta]');
             const ctaStyle = cta && getComputedStyle(cta);
+            const homeHeading = document.querySelector('.entry-content > h1');
+            const specsHeading = document.querySelector('.entry-content > h2');
+            const bodyCopy = [...document.querySelectorAll('.entry-content > p, .entry-content li')];
+            const referenceH1 = document.createElement('h1');
+            const referenceH2 = document.createElement('h2');
+            referenceH1.style.cssText = referenceH2.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none';
+            document.body.append(referenceH1, referenceH2);
+            const homeHeadingStyle = homeHeading && getComputedStyle(homeHeading);
+            const specsHeadingStyle = specsHeading && getComputedStyle(specsHeading);
+            const referenceH1Size = getComputedStyle(referenceH1).fontSize;
+            const referenceH2Size = getComputedStyle(referenceH2).fontSize;
+            const bodyFontSize = parseFloat(getComputedStyle(document.body).fontSize);
+            const bodyCopyReadable = bodyCopy.every((node) => {
+              const style = getComputedStyle(node);
+              return style.color === 'rgb(255, 255, 255)' && parseFloat(style.fontSize) > bodyFontSize;
+            });
+            referenceH1.remove();
+            referenceH2.remove();
             return {
               heroTitleMarkup: hero?.querySelector('h1')?.innerHTML || '',
               storyText: document.querySelector('.entry-content')?.textContent.replace(/\s+/g, ' ').trim() || '',
               ctaHref: cta?.href || '',
               ctaIsGold: Boolean(ctaStyle && ctaStyle.backgroundImage.includes('gradient')),
               ctaIsAngled: Boolean(ctaStyle && ctaStyle.clipPath !== 'none'),
+              headingsAreGold: Boolean(homeHeadingStyle && specsHeadingStyle && homeHeadingStyle.backgroundImage.includes('gradient') && specsHeadingStyle.backgroundImage.includes('gradient') && homeHeadingStyle.webkitTextFillColor === 'rgba(0, 0, 0, 0)' && specsHeadingStyle.webkitTextFillColor === 'rgba(0, 0, 0, 0)'),
+              headingSizesPreserved: Boolean(homeHeadingStyle && specsHeadingStyle && homeHeadingStyle.fontSize === referenceH1Size && specsHeadingStyle.fontSize === referenceH2Size),
+              bodyCopyReadable,
             };
           });
           if (homeStoryState.heroTitleMarkup !== "The science is serious.<br><span>The experience doesn't have to be.</span>") failures.push(`${viewport.name} ${route}: approved Alpha After Dark hero changed`);
           if (!homeStoryState.storyText.includes("Since 1975, Alpha Labs has been California’s quiet powerhouse") || !homeStoryState.storyText.includes("We don’t just run tests; we craft certainty.")) failures.push(`${viewport.name} ${route}: approved homepage story is incomplete`);
           if (!homeStoryState.ctaHref.endsWith('/contact-us-alpha-analytical-laboratories-inc/') || !homeStoryState.ctaIsGold || !homeStoryState.ctaIsAngled) failures.push(`${viewport.name} ${route}: homepage business CTA is not the shared gold angled control`);
+          if (!homeStoryState.headingsAreGold || !homeStoryState.headingSizesPreserved) failures.push(`${viewport.name} ${route}: homepage headings are not gold or their established sizes changed`);
+          if (!homeStoryState.bodyCopyReadable) failures.push(`${viewport.name} ${route}: homepage body copy is not solid white and larger than the base text`);
         }
 
         if (route === '/contact-us-alpha-analytical-laboratories-inc/') {

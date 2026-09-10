@@ -770,6 +770,34 @@ hr, .wp-block-separator { border-color: var(--alpha-line) !important; }
 .entry-content ul, .entry-content ol { padding-left: 1.4rem; }
 .entry-content li::marker { color: var(--alpha-gold); }
 
+/* Homepage story: preserve title scale, add gold focus, improve reading comfort. */
+body.home .entry-content > h1,
+body.home .entry-content > h2 {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: alpha-contact-link-shimmer 5.8s ease-in-out infinite;
+  background-clip: text;
+  background-image: linear-gradient(
+    105deg,
+    #8a5708 0%,
+    #ffd24f 28%,
+    #fff8cf 44%,
+    #ffd24f 56%,
+    #8a5708 100%
+  );
+  background-position: 115% center;
+  background-size: 240% 100%;
+  color: var(--alpha-gold-bright) !important;
+}
+body.home .entry-content > p,
+body.home .entry-content li {
+  color: #fff !important;
+  font-size: 1.125rem !important;
+  line-height: 1.72;
+}
+body.home .entry-content strong,
+body.home .entry-content b { color: #fff !important; }
+
 /* Widgets */
 .sidebar .widget, .footer-widgets .widget {
   background: linear-gradient(145deg, var(--alpha-panel-raised), var(--alpha-ink)) !important;

@@ -38,8 +38,8 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=41') {
-        $failures.Add("Missing Alpha After Dark design cache key v41: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=42') {
+        $failures.Add("Missing Alpha After Dark design cache key v42: $($item.Route)")
     }
     if ($html -notmatch 'script\.js\?v=11') {
         $failures.Add("Missing Alpha After Dark behavior cache key v11: $($item.Route)")
@@ -98,6 +98,13 @@ foreach ($homeMarker in @('California&#8217;s quiet powerhouse for environmental
 }
 if ($homeMarkup -match 'feedback-btn\.png' -or $homeMarkup -match 'is a premier California \(ELAP certifications') {
     $failures.Add('Superseded homepage copy or the obsolete feedback image remains.')
+}
+$homeHeadingRule = [regex]::Match($styles, 'body\.home \.entry-content > h1,[\s\S]*?body\.home \.entry-content > h2\s*\{(?<declarations>[^}]*)\}')
+if (-not $homeHeadingRule.Success -or $homeHeadingRule.Groups['declarations'].Value -notmatch 'alpha-contact-link-shimmer' -or $homeHeadingRule.Groups['declarations'].Value -match 'font-size') {
+    $failures.Add('Homepage headings must shimmer in metallic gold without changing their established sizes.')
+}
+if ($styles -notmatch 'body\.home \.entry-content > p,[\s\S]*?body\.home \.entry-content li\s*\{[^}]*color:\s*#fff\s*!important;[^}]*font-size:\s*1\.125rem\s*!important;') {
+    $failures.Add('Homepage body copy is missing its larger solid-white reading treatment.')
 }
 
 if ($failures.Count -gt 0) {
