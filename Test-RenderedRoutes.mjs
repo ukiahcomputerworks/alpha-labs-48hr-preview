@@ -158,8 +158,9 @@ try {
                 activePanelExposed: panel?.getAttribute('aria-hidden') === 'false' && !panel?.inert,
                 inactivePanelsProtected: [...document.querySelectorAll('[data-location-panel]')].filter((candidate) => candidate !== panel).every((candidate) => candidate.getAttribute('aria-hidden') === 'true' && candidate.inert),
                 uvInkCount: uvInk.length,
-                uvInkFullyVisible: uvInk.every((ink) => getComputedStyle(ink).webkitTextFillColor !== 'rgba(0, 0, 0, 0)'),
-                elap: panel?.querySelector('.location-intelligence__status .uv-ink')?.textContent.trim(),
+                uvInkMasked: uvInk.every((ink) => getComputedStyle(ink).webkitMaskImage !== 'none'),
+                uvInkFullyVisible: uvInk.every((ink) => getComputedStyle(ink).webkitMaskImage === 'none'),
+                elap: panel?.querySelector('.location-intelligence__status')?.textContent.match(/ELAP #\d+/)?.[0],
                 phoneHref: panel?.querySelector('.phone-link')?.getAttribute('href'),
                 streetHref: panel?.querySelector('.street-view-link')?.getAttribute('href'),
               });
@@ -169,30 +170,33 @@ try {
               failures.push(`${viewport.name} ${route}: ${buttonName} did not release only its matching location panel`);
             }
             if (!locatorState.headingFitsOneLine) failures.push(`${viewport.name} ${route}: ${buttonName} location heading does not fit on one line`);
-            if (!locatorState.activePanelExposed || !locatorState.inactivePanelsProtected || locatorState.uvInkCount !== 3) failures.push(`${viewport.name} ${route}: ${buttonName} panel accessibility state or UV field count is incorrect`);
+            if (!locatorState.activePanelExposed || !locatorState.inactivePanelsProtected || locatorState.uvInkCount !== 2) failures.push(`${viewport.name} ${route}: ${buttonName} panel accessibility state or UV field count is incorrect`);
             if (locatorState.elap !== elap || locatorState.phoneHref !== phoneHref || !locatorState.streetHref?.includes(streetNeedle)) failures.push(`${viewport.name} ${route}: ${buttonName} verified contact data or destination changed`);
             if (viewport.name === 'phone' && (locatorState.uvMode !== 'full' || !locatorState.uvInkFullyVisible)) failures.push(`${viewport.name} ${route}: ${buttonName} touch fallback did not fully reveal the docket`);
+            if (viewport.name !== 'phone' && !locatorState.uvInkMasked) failures.push(`${viewport.name} ${route}: ${buttonName} secret ink is not controlled by a CSS mask`);
           }
 
           if (viewport.name !== 'phone') {
             await page.getByRole('button', { name: 'Ukiah', exact: true }).click();
             await page.waitForTimeout(430);
-            const ledgerBox = await page.locator('[data-location-ledger]').boundingBox();
+            const revealBox = await page.locator('[data-location-panel="ukiah"] .uv-reveal-area').boundingBox();
             const scrollBeforeLamp = await page.evaluate(() => window.scrollY);
-            await page.mouse.move(ledgerBox.x + ledgerBox.width * .58, ledgerBox.y + ledgerBox.height * .58);
+            await page.mouse.move(revealBox.x + revealBox.width * .52, revealBox.y + revealBox.height * .52);
             await page.waitForTimeout(80);
             const lampState = await page.evaluate(() => {
               const ledger = document.querySelector('[data-location-ledger]');
               const panel = ledger.querySelector('[data-location-state="active"]');
+              const revealArea = panel.querySelector('.uv-reveal-area');
               return {
                 active: ledger.classList.contains('is-uv-active'),
-                panelX: panel.style.getPropertyValue('--uv-panel-x'),
-                panelY: panel.style.getPropertyValue('--uv-panel-y'),
+                areaX: revealArea.style.getPropertyValue('--uv-area-x'),
+                areaY: revealArea.style.getPropertyValue('--uv-area-y'),
                 inkCoordinates: [...panel.querySelectorAll('.uv-ink')].every((ink) => ink.style.getPropertyValue('--uv-local-x') && ink.style.getPropertyValue('--uv-local-y')),
+                inkMaskApplied: [...panel.querySelectorAll('.uv-ink')].every((ink) => getComputedStyle(ink).webkitMaskImage.includes('radial-gradient')),
                 scrollY: window.scrollY,
               };
             });
-            if (!lampState.active || !lampState.panelX || !lampState.panelY || !lampState.inkCoordinates) failures.push(`${viewport.name} ${route}: pointer movement did not update the UV lamp coordinates`);
+            if (!lampState.active || !lampState.areaX || !lampState.areaY || !lampState.inkCoordinates || !lampState.inkMaskApplied) failures.push(`${viewport.name} ${route}: pointer movement did not update the masked UV lamp coordinates`);
             if (Math.abs(lampState.scrollY - scrollBeforeLamp) > 1) failures.push(`${viewport.name} ${route}: moving the UV lamp changed the page scroll position`);
 
             const elkGroveButton = page.getByRole('button', { name: 'Elk Grove', exact: true });
@@ -203,7 +207,7 @@ try {
               const panel = document.querySelector('[data-location-panel="elk-grove"]');
               return {
                 headingFocused: document.activeElement === panel.querySelector('h3'),
-                fullyReadable: [...panel.querySelectorAll('.uv-ink')].every((ink) => getComputedStyle(ink).webkitTextFillColor !== 'rgba(0, 0, 0, 0)'),
+                fullyReadable: [...panel.querySelectorAll('.uv-ink')].every((ink) => getComputedStyle(ink).webkitMaskImage === 'none'),
               };
             });
             if (!keyboardState.headingFocused || !keyboardState.fullyReadable) failures.push(`${viewport.name} ${route}: keyboard selection did not focus and fully reveal the released dossier`);
@@ -329,7 +333,7 @@ try {
         ledgerState: ledger?.dataset.locationState,
         uvMode: ledger?.dataset.uvMode,
         scanAnimation: getComputedStyle(document.querySelector('.location-intelligence__scan')).animationName,
-        fullyReadable: [...panel.querySelectorAll('.uv-ink')].every((ink) => getComputedStyle(ink).webkitTextFillColor !== 'rgba(0, 0, 0, 0)'),
+        fullyReadable: [...panel.querySelectorAll('.uv-ink')].every((ink) => getComputedStyle(ink).webkitMaskImage === 'none'),
       };
     });
     if (reducedMotionState.ledgerState !== 'ready' || reducedMotionState.uvMode !== 'full' || reducedMotionState.scanAnimation !== 'none' || !reducedMotionState.fullyReadable) {

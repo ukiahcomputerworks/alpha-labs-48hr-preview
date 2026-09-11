@@ -91,10 +91,12 @@ if (locationRoom) {
     const activePanel = locationLedger.querySelector('[data-location-panel][data-location-state="active"]');
     if (!activePanel) return;
 
-    const panelRect = activePanel.getBoundingClientRect();
-    activePanel.style.setProperty('--uv-panel-x', `${pendingPointer.x - panelRect.left}px`);
-    activePanel.style.setProperty('--uv-panel-y', `${pendingPointer.y - panelRect.top}px`);
-    activePanel.querySelectorAll('.uv-ink').forEach((ink) => {
+    const revealArea = activePanel.querySelector('.uv-reveal-area');
+    if (!revealArea) return;
+    const areaRect = revealArea.getBoundingClientRect();
+    revealArea.style.setProperty('--uv-area-x', `${pendingPointer.x - areaRect.left}px`);
+    revealArea.style.setProperty('--uv-area-y', `${pendingPointer.y - areaRect.top}px`);
+    revealArea.querySelectorAll('.uv-ink').forEach((ink) => {
       const inkRect = ink.getBoundingClientRect();
       ink.style.setProperty('--uv-local-x', `${pendingPointer.x - inkRect.left}px`);
       ink.style.setProperty('--uv-local-y', `${pendingPointer.y - inkRect.top}px`);
@@ -142,15 +144,13 @@ if (locationRoom) {
     });
   });
 
-  locationLedger?.addEventListener('pointerenter', (event) => {
-    if (locationLedger.dataset.locationState !== 'ready' || locationLedger.dataset.uvMode !== 'interactive') return;
-    locationLedger.classList.add('is-uv-active');
-    pendingPointer = { x: event.clientX, y: event.clientY };
-    if (!pointerFrame) pointerFrame = window.requestAnimationFrame(updateUvPosition);
-  });
-
   locationLedger?.addEventListener('pointermove', (event) => {
     if (locationLedger.dataset.locationState !== 'ready' || locationLedger.dataset.uvMode !== 'interactive') return;
+    if (!event.target.closest?.('.uv-reveal-area')) {
+      deactivateUvLamp();
+      return;
+    }
+    locationLedger.classList.add('is-uv-active');
     pendingPointer = { x: event.clientX, y: event.clientY };
     if (!pointerFrame) pointerFrame = window.requestAnimationFrame(updateUvPosition);
   });
@@ -159,6 +159,10 @@ if (locationRoom) {
     locationLedger?.classList.remove('is-uv-active');
     pendingPointer = null;
   };
+  locationLedger?.addEventListener('pointerout', (event) => {
+    const revealArea = event.target.closest?.('.uv-reveal-area');
+    if (revealArea && !revealArea.contains(event.relatedTarget)) deactivateUvLamp();
+  });
   locationLedger?.addEventListener('pointerleave', deactivateUvLamp);
   locationLedger?.addEventListener('pointercancel', deactivateUvLamp);
 }

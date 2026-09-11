@@ -1293,8 +1293,6 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
   70%, 100% { box-shadow: 0 0 0 12px rgba(255, 226, 129, 0), 0 0 20px rgba(255, 226, 129, .56); }
 }
 .location-intelligence {
-  --uv-panel-x: 50%;
-  --uv-panel-y: 42%;
   align-items: center;
   background:
     repeating-linear-gradient(96deg, rgba(255, 244, 198, .018) 0 1px, transparent 1px 8px),
@@ -1385,24 +1383,11 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
   position: relative;
   z-index: 2;
 }
-.location-intelligence__panel::after {
-  background: radial-gradient(circle 155px at var(--uv-panel-x) var(--uv-panel-y), rgba(103, 245, 255, .16), rgba(117, 67, 255, .1) 34%, transparent 72%);
-  content: "";
-  inset: -2rem;
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  transition: opacity 120ms ease-out;
-  z-index: -1;
-}
 .location-intelligence[data-location-state="scanning"] .location-intelligence__panel[data-location-state="active"] {
   opacity: 0;
 }
 .location-intelligence[data-location-state="ready"] .location-intelligence__panel[data-location-state="active"] {
   animation: alpha-location-release 260ms ease-out both;
-}
-.location-intelligence.is-uv-active .location-intelligence__panel[data-location-state="active"]::after {
-  opacity: 1;
 }
 .location-intelligence__status {
   color: var(--alpha-gold-bright) !important;
@@ -1447,31 +1432,50 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
   font-size: 1.45rem;
   letter-spacing: .04em;
 }
-.location-intelligence .uv-ink {
+.uv-reveal-area {
+  --uv-area-x: 50%;
+  --uv-area-y: 50%;
+  isolation: isolate;
+  position: relative;
+}
+.uv-reveal-area::before {
+  background: radial-gradient(circle 150px at var(--uv-area-x) var(--uv-area-y), rgba(93, 245, 255, .17) 0%, rgba(104, 81, 255, .13) 38%, rgba(65, 23, 113, .07) 58%, transparent 76%);
+  content: "";
+  inset: -.8rem -1.1rem;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 100ms ease-out;
+  z-index: -1;
+}
+.location-intelligence.is-uv-active .uv-reveal-area::before { opacity: 1; }
+.location-intelligence .uv-reveal-area .uv-ink {
   --uv-local-x: -320px;
   --uv-local-y: -320px;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-image: radial-gradient(
-    circle 118px at var(--uv-local-x) var(--uv-local-y),
-    #fffbd5 0%,
-    #94fbff 24%,
-    #c6a2ff 43%,
-    rgba(220, 175, 63, .3) 68%,
-    rgba(148, 111, 43, .16) 100%
-  );
-  color: rgba(148, 111, 43, .16) !important;
-  text-shadow: none;
+  -webkit-mask-image: radial-gradient(circle 126px at var(--uv-local-x) var(--uv-local-y), #000 0 42%, rgba(0, 0, 0, .92) 55%, rgba(0, 0, 0, .48) 72%, transparent 100%);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-text-fill-color: currentColor;
+  color: #b9fcff !important;
+  mask-image: radial-gradient(circle 126px at var(--uv-local-x) var(--uv-local-y), #000 0 42%, rgba(0, 0, 0, .92) 55%, rgba(0, 0, 0, .48) 72%, transparent 100%);
+  mask-repeat: no-repeat;
+  text-shadow: 0 0 5px rgba(255, 245, 175, .9), 0 0 10px rgba(99, 243, 255, .95), 0 0 24px rgba(117, 67, 255, .7);
 }
 .location-intelligence[data-uv-mode="full"] .uv-ink,
 .location-intelligence:focus-within .uv-ink,
 .location-intelligence .uv-ink:hover,
 .location-intelligence .uv-ink:focus-visible {
+  -webkit-mask-image: none;
   -webkit-text-fill-color: currentColor;
-  background-image: none;
+  mask-image: none;
   color: #fffbd5 !important;
-  text-shadow: 0 0 7px rgba(120, 246, 255, .7), 0 0 18px rgba(135, 78, 255, .42);
+  text-shadow: 0 0 6px rgba(255, 245, 175, .8), 0 0 12px rgba(120, 246, 255, .72), 0 0 22px rgba(135, 78, 255, .46);
+}
+@supports not ((mask-image: radial-gradient(circle, #000, transparent)) or (-webkit-mask-image: radial-gradient(circle, #000, transparent))) {
+  .location-intelligence .uv-ink {
+    -webkit-text-fill-color: currentColor;
+    color: #fffbd5 !important;
+    text-shadow: none;
+  }
 }
 .location-intelligence__lamp-hint {
   bottom: 1rem;
@@ -2415,8 +2419,9 @@ input[type="submit"],
 @media (hover: none), (pointer: coarse) {
   .location-intelligence { cursor: auto; }
   .location-intelligence .uv-ink {
+    -webkit-mask-image: none;
     -webkit-text-fill-color: currentColor;
-    background-image: none;
+    mask-image: none;
     color: #fffbd5 !important;
     text-shadow: 0 0 7px rgba(120, 246, 255, .58), 0 0 16px rgba(135, 78, 255, .34);
   }
@@ -2434,8 +2439,9 @@ input[type="submit"],
   .location-intelligence__scan,
   .location-intelligence__panel { animation: none; }
   .location-intelligence .uv-ink {
+    -webkit-mask-image: none;
     -webkit-text-fill-color: currentColor;
-    background-image: none;
+    mask-image: none;
     color: #fffbd5 !important;
     text-shadow: none;
   }

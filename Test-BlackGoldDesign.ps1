@@ -38,11 +38,16 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=44') {
-        $failures.Add("Missing Alpha After Dark design cache key v44: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=45') {
+        $failures.Add("Missing Alpha After Dark design cache key v45: $($item.Route)")
     }
-    if ($html -notmatch 'script\.js\?v=12') {
-        $failures.Add("Missing Alpha After Dark behavior cache key v12: $($item.Route)")
+    if ($html -notmatch 'script\.js\?v=13') {
+        $failures.Add("Missing Alpha After Dark behavior cache key v13: $($item.Route)")
+    }
+    $contactNavPosition = $html.IndexOf('id="menu-item-170"')
+    $regulatoryNavPosition = $html.IndexOf('id="menu-item-176"')
+    if (($contactNavPosition -lt 0) -xor ($regulatoryNavPosition -lt 0) -or ($contactNavPosition -ge 0 -and $contactNavPosition -gt $regulatoryNavPosition)) {
+        $failures.Add("Contact does not precede Regulatory in the shared navigation: $($item.Route)")
     }
     if ($html -match 'PDF Download[^<]*(?:requires|Requires)|Adobe Acrobat Reader|get\.adobe\.com/reader') {
         $failures.Add("Obsolete Adobe Reader requirement remains: $($item.Route)")
@@ -67,13 +72,13 @@ if ($styles -notmatch '\.california-map\s*\{[\s\S]*?transform:\s*scale\(1\.12\);
 if ($contact -notmatch 'data-location-ledger' -or $contact -notmatch 'location-intelligence__scan' -or @([regex]::Matches($contact, 'data-location-state="inactive" aria-hidden="true" inert')).Count -ne 6) {
     $failures.Add('The six location dossiers are missing their explicit sealed, inactive, or scan states.')
 }
-if (@([regex]::Matches($contact, 'class="[^"]*uv-ink[^"]*"')).Count -ne 18 -or @([regex]::Matches($contact, 'data-location-panel="[^"]+"[^>]*\shidden(?:\s|>)')).Count -ne 0) {
-    $failures.Add('The ELAP, address, and phone fields are not correctly prepared as UV ink, or obsolete hidden attributes remain.')
+if (@([regex]::Matches($contact, 'class="uv-reveal-area"')).Count -ne 6 -or @([regex]::Matches($contact, 'class="[^"]*uv-ink[^"]*"')).Count -ne 12 -or @([regex]::Matches($contact, 'data-location-panel="[^"]+"[^>]*\shidden(?:\s|>)')).Count -ne 0) {
+    $failures.Add('The six UV reveal areas and their address and phone fields are incomplete, or obsolete hidden attributes remain.')
 }
-if ($styles -notmatch 'circle 118px at var\(--uv-local-x\) var\(--uv-local-y\)' -or $styles -notmatch '@media \(hover: none\), \(pointer: coarse\)' -or $styles -notmatch '@media \(prefers-reduced-motion: reduce\)') {
+if ($styles -notmatch '-webkit-mask-image:\s*radial-gradient\(circle 126px at var\(--uv-local-x\) var\(--uv-local-y\)' -or $styles -notmatch 'circle 150px at var\(--uv-area-x\) var\(--uv-area-y\)' -or $styles -notmatch '@media \(hover: none\), \(pointer: coarse\)' -or $styles -notmatch '@media \(prefers-reduced-motion: reduce\)') {
     $failures.Add('The pointer UV field or its touch and reduced-motion fallbacks are incomplete.')
 }
-if ($script -notmatch 'requestAnimationFrame\(updateUvPosition\)' -or $script -notmatch "panel\.inert = !isActive" -or $script -notmatch "focus\(\{ preventScroll: true \}\)") {
+if ($script -notmatch 'requestAnimationFrame\(updateUvPosition\)' -or $script -notmatch "--uv-area-x" -or $script -notmatch "closest\?\.\('\.uv-reveal-area'\)" -or $script -notmatch "panel\.inert = !isActive" -or $script -notmatch "focus\(\{ preventScroll: true \}\)") {
     $failures.Add('The efficient UV tracking, inert panel state, or keyboard focus handoff is missing.')
 }
 
