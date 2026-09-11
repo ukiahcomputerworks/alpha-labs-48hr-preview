@@ -1293,14 +1293,20 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
   70%, 100% { box-shadow: 0 0 0 12px rgba(255, 226, 129, 0), 0 0 20px rgba(255, 226, 129, .56); }
 }
 .location-intelligence {
+  --uv-panel-x: 50%;
+  --uv-panel-y: 42%;
   align-items: center;
   background:
-    linear-gradient(135deg, rgba(255, 210, 79, .06), transparent 38%),
-    rgba(3, 3, 4, .72);
+    repeating-linear-gradient(96deg, rgba(255, 244, 198, .018) 0 1px, transparent 1px 8px),
+    repeating-linear-gradient(4deg, rgba(135, 94, 26, .025) 0 1px, transparent 1px 11px),
+    radial-gradient(circle at 18% 8%, rgba(255, 210, 79, .09), transparent 36%),
+    linear-gradient(145deg, #17130d 0%, #090909 48%, #020304 100%);
   border: 1px solid rgba(255, 210, 79, .26);
   box-shadow: inset 0 0 60px rgba(0, 0, 0, .42);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
   container-type: inline-size;
   display: grid;
+  isolation: isolate;
   min-height: 500px;
   overflow: hidden;
   padding: clamp(1.4rem, 4vw, 3.2rem);
@@ -1313,12 +1319,38 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
   content: "";
   height: 24px;
   opacity: .58;
+  pointer-events: none;
   position: absolute;
   width: 24px;
+  z-index: 5;
 }
 .location-intelligence::before { border-width: 1px 0 0 1px; left: 14px; top: 14px; }
 .location-intelligence::after { border-width: 0 1px 1px 0; bottom: 14px; right: 14px; }
+.location-intelligence[data-location-state="ready"][data-uv-mode="interactive"] { cursor: crosshair; }
+.location-intelligence__scan {
+  background: linear-gradient(90deg, transparent, rgba(217, 152, 22, .2) 25%, rgba(255, 238, 155, .94) 50%, rgba(116, 247, 255, .34) 62%, transparent);
+  bottom: 0;
+  filter: blur(.4px) drop-shadow(0 0 14px rgba(255, 199, 54, .62));
+  left: -48%;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transform: skewX(-10deg);
+  width: 34%;
+  z-index: 4;
+}
+.location-intelligence[data-location-state="scanning"] .location-intelligence__scan {
+  animation: alpha-docket-scan 380ms cubic-bezier(.22, .7, .32, 1) both;
+}
+@keyframes alpha-docket-scan {
+  0% { opacity: 0; transform: translateX(0) skewX(-10deg); }
+  18%, 72% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(440%) skewX(-10deg); }
+}
 .location-intelligence__locked { text-align: center; }
+.location-intelligence__locked[aria-hidden="true"],
+.location-intelligence__panel[data-location-state="inactive"] { display: none; }
 .location-intelligence__locked > span {
   align-items: center;
   background: var(--alpha-gold-material);
@@ -1349,8 +1381,28 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
   margin-top: .5rem;
 }
 .location-intelligence__panel {
-  animation: alpha-location-release 260ms ease-out both;
   min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+.location-intelligence__panel::after {
+  background: radial-gradient(circle 155px at var(--uv-panel-x) var(--uv-panel-y), rgba(103, 245, 255, .16), rgba(117, 67, 255, .1) 34%, transparent 72%);
+  content: "";
+  inset: -2rem;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 120ms ease-out;
+  z-index: -1;
+}
+.location-intelligence[data-location-state="scanning"] .location-intelligence__panel[data-location-state="active"] {
+  opacity: 0;
+}
+.location-intelligence[data-location-state="ready"] .location-intelligence__panel[data-location-state="active"] {
+  animation: alpha-location-release 260ms ease-out both;
+}
+.location-intelligence.is-uv-active .location-intelligence__panel[data-location-state="active"]::after {
+  opacity: 1;
 }
 .location-intelligence__status {
   color: var(--alpha-gold-bright) !important;
@@ -1384,15 +1436,63 @@ table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span)
 }
 .location-intelligence__panel .street-view-link,
 .location-intelligence__panel .phone-link {
+  display: block;
   font-size: 1rem;
   line-height: 1.5;
   max-width: 100%;
+  width: fit-content;
 }
 .location-intelligence__panel .phone-link {
   font-family: var(--alpha-display);
   font-size: 1.45rem;
   letter-spacing: .04em;
 }
+.location-intelligence .uv-ink {
+  --uv-local-x: -320px;
+  --uv-local-y: -320px;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-image: radial-gradient(
+    circle 118px at var(--uv-local-x) var(--uv-local-y),
+    #fffbd5 0%,
+    #94fbff 24%,
+    #c6a2ff 43%,
+    rgba(220, 175, 63, .3) 68%,
+    rgba(148, 111, 43, .16) 100%
+  );
+  color: rgba(148, 111, 43, .16) !important;
+  text-shadow: none;
+}
+.location-intelligence[data-uv-mode="full"] .uv-ink,
+.location-intelligence:focus-within .uv-ink,
+.location-intelligence .uv-ink:hover,
+.location-intelligence .uv-ink:focus-visible {
+  -webkit-text-fill-color: currentColor;
+  background-image: none;
+  color: #fffbd5 !important;
+  text-shadow: 0 0 7px rgba(120, 246, 255, .7), 0 0 18px rgba(135, 78, 255, .42);
+}
+.location-intelligence__lamp-hint {
+  bottom: 1rem;
+  color: rgba(163, 249, 255, .68) !important;
+  font-family: var(--alpha-display);
+  font-size: .66rem;
+  font-weight: 700;
+  left: 0;
+  letter-spacing: .12em;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  text-transform: uppercase;
+  transition: opacity 180ms ease;
+  z-index: 3;
+}
+.location-intelligence[data-location-state="ready"][data-uv-mode="interactive"] .location-intelligence__lamp-hint { opacity: 1; }
+.location-intelligence[data-uv-mode="full"] .location-intelligence__lamp-hint { display: none; }
 @keyframes alpha-location-release {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -2312,6 +2412,17 @@ input[type="submit"],
   }
 }
 
+@media (hover: none), (pointer: coarse) {
+  .location-intelligence { cursor: auto; }
+  .location-intelligence .uv-ink {
+    -webkit-text-fill-color: currentColor;
+    background-image: none;
+    color: #fffbd5 !important;
+    text-shadow: 0 0 7px rgba(120, 246, 255, .58), 0 0 16px rgba(135, 78, 255, .34);
+  }
+  .location-intelligence__lamp-hint { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   #client-connect::after,
   .alpha-after-dark__primary::after,
@@ -2320,5 +2431,13 @@ input[type="submit"],
   .location-dossier__reveal,
   .california-map__shine-sweep,
   .alpha-map-pin.is-active .alpha-map-pin__dot,
+  .location-intelligence__scan,
   .location-intelligence__panel { animation: none; }
+  .location-intelligence .uv-ink {
+    -webkit-text-fill-color: currentColor;
+    background-image: none;
+    color: #fffbd5 !important;
+    text-shadow: none;
+  }
+  .location-intelligence__lamp-hint { display: none; }
 }

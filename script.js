@@ -66,10 +66,50 @@ if (locationRoom) {
   const locationButtons = [...locationRoom.querySelectorAll('[data-location]')];
   const locationPanels = [...locationRoom.querySelectorAll('[data-location-panel]')];
   const locationPlaceholder = locationRoom.querySelector('[data-location-placeholder]');
+  const locationLedger = locationRoom.querySelector('[data-location-ledger]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const coarsePointer = window.matchMedia('(hover: none), (pointer: coarse)');
+  let revealTimer = 0;
+  let pointerFrame = 0;
+  let pendingPointer = null;
+
+  const syncUvMode = () => {
+    if (!locationLedger) return;
+    locationLedger.dataset.uvMode = reducedMotion.matches || coarsePointer.matches ? 'full' : 'interactive';
+    if (locationLedger.dataset.uvMode === 'full') locationLedger.classList.remove('is-uv-active');
+  };
+
+  const finishLocationReveal = (panel, focusHeading) => {
+    if (!locationLedger || panel.dataset.locationState !== 'active') return;
+    locationLedger.dataset.locationState = 'ready';
+    if (focusHeading) panel.querySelector('h3')?.focus({ preventScroll: true });
+  };
+
+  const updateUvPosition = () => {
+    pointerFrame = 0;
+    if (!pendingPointer || !locationLedger || locationLedger.dataset.uvMode !== 'interactive') return;
+    const activePanel = locationLedger.querySelector('[data-location-panel][data-location-state="active"]');
+    if (!activePanel) return;
+
+    const panelRect = activePanel.getBoundingClientRect();
+    activePanel.style.setProperty('--uv-panel-x', `${pendingPointer.x - panelRect.left}px`);
+    activePanel.style.setProperty('--uv-panel-y', `${pendingPointer.y - panelRect.top}px`);
+    activePanel.querySelectorAll('.uv-ink').forEach((ink) => {
+      const inkRect = ink.getBoundingClientRect();
+      ink.style.setProperty('--uv-local-x', `${pendingPointer.x - inkRect.left}px`);
+      ink.style.setProperty('--uv-local-y', `${pendingPointer.y - inkRect.top}px`);
+    });
+  };
+
+  syncUvMode();
+  reducedMotion.addEventListener?.('change', syncUvMode);
+  coarsePointer.addEventListener?.('change', syncUvMode);
 
   locationButtons.forEach((button) => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', (event) => {
       const selectedLocation = button.dataset.location;
+      const activePanel = locationPanels.find((panel) => panel.dataset.locationPanel === selectedLocation);
+      if (!activePanel || !locationLedger) return;
 
       locationButtons.forEach((candidate) => {
         const isSelected = candidate === button;
@@ -78,14 +118,49 @@ if (locationRoom) {
       });
 
       locationPanels.forEach((panel) => {
-        panel.hidden = panel.dataset.locationPanel !== selectedLocation;
+        const isActive = panel === activePanel;
+        panel.dataset.locationState = isActive ? 'active' : 'inactive';
+        panel.setAttribute('aria-hidden', String(!isActive));
+        panel.inert = !isActive;
       });
 
       if (locationPlaceholder) {
-        locationPlaceholder.hidden = true;
+        locationPlaceholder.setAttribute('aria-hidden', 'true');
+        locationPlaceholder.inert = true;
+      }
+
+      window.clearTimeout(revealTimer);
+      locationLedger.classList.remove('is-uv-active');
+      locationLedger.dataset.locationState = reducedMotion.matches ? 'ready' : 'scanning';
+      const focusHeading = event.detail === 0;
+
+      if (reducedMotion.matches) {
+        finishLocationReveal(activePanel, focusHeading);
+      } else {
+        revealTimer = window.setTimeout(() => finishLocationReveal(activePanel, focusHeading), 390);
       }
     });
   });
+
+  locationLedger?.addEventListener('pointerenter', (event) => {
+    if (locationLedger.dataset.locationState !== 'ready' || locationLedger.dataset.uvMode !== 'interactive') return;
+    locationLedger.classList.add('is-uv-active');
+    pendingPointer = { x: event.clientX, y: event.clientY };
+    if (!pointerFrame) pointerFrame = window.requestAnimationFrame(updateUvPosition);
+  });
+
+  locationLedger?.addEventListener('pointermove', (event) => {
+    if (locationLedger.dataset.locationState !== 'ready' || locationLedger.dataset.uvMode !== 'interactive') return;
+    pendingPointer = { x: event.clientX, y: event.clientY };
+    if (!pointerFrame) pointerFrame = window.requestAnimationFrame(updateUvPosition);
+  });
+
+  const deactivateUvLamp = () => {
+    locationLedger?.classList.remove('is-uv-active');
+    pendingPointer = null;
+  };
+  locationLedger?.addEventListener('pointerleave', deactivateUvLamp);
+  locationLedger?.addEventListener('pointercancel', deactivateUvLamp);
 }
 
 document.querySelectorAll('[data-agency-vault]').forEach((vault) => {

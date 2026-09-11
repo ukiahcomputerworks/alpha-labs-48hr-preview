@@ -18,7 +18,7 @@ const results = [];
 
 try {
   for (const viewport of viewports) {
-    const page = await browser.newPage({ viewport });
+    const page = await browser.newPage({ viewport, hasTouch: viewport.name === 'phone' });
 
     for (const item of manifest) {
       const route = item.Route === '/' ? '/' : item.Route.endsWith('.html') ? item.Route : `${item.Route}/`;
@@ -130,32 +130,83 @@ try {
           }
 
           const locations = [
-            ['Ukiah', 'ukiah'],
-            ['Petaluma', 'petaluma'],
-            ['Elk Grove', 'elk-grove'],
-            ['Livermore', 'livermore'],
-            ['Signal Hill', 'signal-hill'],
-            ['Vista', 'vista'],
+            ['Ukiah', 'ukiah', 'ELAP #1551', 'tel:+17074680401', 'pano=hrSOhWrCACuB3DL7BAOeWw'],
+            ['Petaluma', 'petaluma', 'ELAP #2303', 'tel:+17077693128', 'pano=6tT44-bsUzYURf0uz4lkwg'],
+            ['Elk Grove', 'elk-grove', 'ELAP #2922', 'tel:+19166865190', 'pano=Kzeu8duDrdPRLF1ls2HtdQ'],
+            ['Livermore', 'livermore', 'ELAP #2728', 'tel:+19258286226', 'pano=eiwmjrYIy4pXrqJ8vMRZyg'],
+            ['Signal Hill', 'signal-hill', 'ELAP #3091', 'tel:+14242675032', 'pano=ADsf5U4F_86DB1IFNYfwpA'],
+            ['Vista', 'vista', 'ELAP #3055', 'tel:+17605363352', 'pano=PBBjY1xAnGrsFhH8jSf_cA'],
           ];
 
-          for (const [buttonName, panelName] of locations) {
+          for (const [buttonName, panelName, elap, phoneHref, streetNeedle] of locations) {
             await page.getByRole('button', { name: buttonName, exact: true }).click();
+            await page.waitForTimeout(430);
             const locatorState = await page.evaluate((expectedPanel) => {
               const heading = document.querySelector(`[data-location-panel="${expectedPanel}"] h3`);
+              const panel = document.querySelector(`[data-location-panel="${expectedPanel}"]`);
+              const ledger = document.querySelector('[data-location-ledger]');
+              const uvInk = [...panel.querySelectorAll('.uv-ink')];
               return ({
                 activePins: document.querySelectorAll('.alpha-map-pin.is-active').length,
                 visiblePanels: [...document.querySelectorAll('[data-location-panel]')]
-                  .filter((panel) => !panel.hidden)
+                  .filter((candidate) => candidate.dataset.locationState === 'active')
                   .map((panel) => panel.dataset.locationPanel),
-                placeholderHidden: document.querySelector('[data-location-placeholder]')?.hidden,
+                placeholderHidden: document.querySelector('[data-location-placeholder]')?.getAttribute('aria-hidden') === 'true',
                 headingFitsOneLine: Boolean(heading && heading.scrollWidth <= heading.clientWidth + 1 && getComputedStyle(heading).whiteSpace === 'nowrap'),
+                ledgerState: ledger?.dataset.locationState,
+                uvMode: ledger?.dataset.uvMode,
+                activePanelExposed: panel?.getAttribute('aria-hidden') === 'false' && !panel?.inert,
+                inactivePanelsProtected: [...document.querySelectorAll('[data-location-panel]')].filter((candidate) => candidate !== panel).every((candidate) => candidate.getAttribute('aria-hidden') === 'true' && candidate.inert),
+                uvInkCount: uvInk.length,
+                uvInkFullyVisible: uvInk.every((ink) => getComputedStyle(ink).webkitTextFillColor !== 'rgba(0, 0, 0, 0)'),
+                elap: panel?.querySelector('.location-intelligence__status .uv-ink')?.textContent.trim(),
+                phoneHref: panel?.querySelector('.phone-link')?.getAttribute('href'),
+                streetHref: panel?.querySelector('.street-view-link')?.getAttribute('href'),
               });
             }, panelName);
 
-            if (locatorState.activePins !== 1 || locatorState.visiblePanels.length !== 1 || locatorState.visiblePanels[0] !== panelName || !locatorState.placeholderHidden) {
+            if (locatorState.activePins !== 1 || locatorState.visiblePanels.length !== 1 || locatorState.visiblePanels[0] !== panelName || !locatorState.placeholderHidden || locatorState.ledgerState !== 'ready') {
               failures.push(`${viewport.name} ${route}: ${buttonName} did not release only its matching location panel`);
             }
             if (!locatorState.headingFitsOneLine) failures.push(`${viewport.name} ${route}: ${buttonName} location heading does not fit on one line`);
+            if (!locatorState.activePanelExposed || !locatorState.inactivePanelsProtected || locatorState.uvInkCount !== 3) failures.push(`${viewport.name} ${route}: ${buttonName} panel accessibility state or UV field count is incorrect`);
+            if (locatorState.elap !== elap || locatorState.phoneHref !== phoneHref || !locatorState.streetHref?.includes(streetNeedle)) failures.push(`${viewport.name} ${route}: ${buttonName} verified contact data or destination changed`);
+            if (viewport.name === 'phone' && (locatorState.uvMode !== 'full' || !locatorState.uvInkFullyVisible)) failures.push(`${viewport.name} ${route}: ${buttonName} touch fallback did not fully reveal the docket`);
+          }
+
+          if (viewport.name !== 'phone') {
+            await page.getByRole('button', { name: 'Ukiah', exact: true }).click();
+            await page.waitForTimeout(430);
+            const ledgerBox = await page.locator('[data-location-ledger]').boundingBox();
+            const scrollBeforeLamp = await page.evaluate(() => window.scrollY);
+            await page.mouse.move(ledgerBox.x + ledgerBox.width * .58, ledgerBox.y + ledgerBox.height * .58);
+            await page.waitForTimeout(80);
+            const lampState = await page.evaluate(() => {
+              const ledger = document.querySelector('[data-location-ledger]');
+              const panel = ledger.querySelector('[data-location-state="active"]');
+              return {
+                active: ledger.classList.contains('is-uv-active'),
+                panelX: panel.style.getPropertyValue('--uv-panel-x'),
+                panelY: panel.style.getPropertyValue('--uv-panel-y'),
+                inkCoordinates: [...panel.querySelectorAll('.uv-ink')].every((ink) => ink.style.getPropertyValue('--uv-local-x') && ink.style.getPropertyValue('--uv-local-y')),
+                scrollY: window.scrollY,
+              };
+            });
+            if (!lampState.active || !lampState.panelX || !lampState.panelY || !lampState.inkCoordinates) failures.push(`${viewport.name} ${route}: pointer movement did not update the UV lamp coordinates`);
+            if (Math.abs(lampState.scrollY - scrollBeforeLamp) > 1) failures.push(`${viewport.name} ${route}: moving the UV lamp changed the page scroll position`);
+
+            const elkGroveButton = page.getByRole('button', { name: 'Elk Grove', exact: true });
+            await elkGroveButton.focus();
+            await elkGroveButton.press('Enter');
+            await page.waitForTimeout(430);
+            const keyboardState = await page.evaluate(() => {
+              const panel = document.querySelector('[data-location-panel="elk-grove"]');
+              return {
+                headingFocused: document.activeElement === panel.querySelector('h3'),
+                fullyReadable: [...panel.querySelectorAll('.uv-ink')].every((ink) => getComputedStyle(ink).webkitTextFillColor !== 'rgba(0, 0, 0, 0)'),
+              };
+            });
+            if (!keyboardState.headingFocused || !keyboardState.fullyReadable) failures.push(`${viewport.name} ${route}: keyboard selection did not focus and fully reveal the released dossier`);
           }
         }
 
@@ -261,6 +312,31 @@ try {
     }
 
     await page.close();
+  }
+
+  const reducedMotionPage = await browser.newPage({
+    viewport: { width: 1440, height: 1000 },
+    reducedMotion: 'reduce',
+  });
+  try {
+    await reducedMotionPage.goto(`${baseUrl}/contact-us-alpha-analytical-laboratories-inc/`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await reducedMotionPage.getByRole('button', { name: 'Ukiah', exact: true }).click();
+    await reducedMotionPage.waitForTimeout(80);
+    const reducedMotionState = await reducedMotionPage.evaluate(() => {
+      const ledger = document.querySelector('[data-location-ledger]');
+      const panel = document.querySelector('[data-location-panel="ukiah"]');
+      return {
+        ledgerState: ledger?.dataset.locationState,
+        uvMode: ledger?.dataset.uvMode,
+        scanAnimation: getComputedStyle(document.querySelector('.location-intelligence__scan')).animationName,
+        fullyReadable: [...panel.querySelectorAll('.uv-ink')].every((ink) => getComputedStyle(ink).webkitTextFillColor !== 'rgba(0, 0, 0, 0)'),
+      };
+    });
+    if (reducedMotionState.ledgerState !== 'ready' || reducedMotionState.uvMode !== 'full' || reducedMotionState.scanAnimation !== 'none' || !reducedMotionState.fullyReadable) {
+      failures.push(`reduced-motion /contact-us-alpha-analytical-laboratories-inc/: full-reveal fallback failed (${JSON.stringify(reducedMotionState)})`);
+    }
+  } finally {
+    await reducedMotionPage.close();
   }
 
   if (failures.length) {
