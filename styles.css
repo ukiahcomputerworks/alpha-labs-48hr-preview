@@ -1969,24 +1969,27 @@ button::after, .button::after { animation-duration: 5.1s; animation-delay: -2.7s
 }
 
 .alpha-after-dark__eyebrow {
+  align-items: center;
   color: var(--alpha-champagne) !important;
+  display: flex;
   font-family: var(--alpha-display) !important;
   font-size: .78rem;
   font-weight: 700;
+  gap: 14px;
   letter-spacing: .2em;
   margin: 0 0 1rem;
-  padding-left: 44px;
+  max-width: 100%;
   position: relative;
   text-transform: uppercase;
+  width: fit-content;
 }
 
-.alpha-after-dark__eyebrow::before {
+.alpha-after-dark__eyebrow::before,
+.alpha-after-dark__eyebrow::after {
   background: var(--alpha-gold-material);
   content: "";
+  flex: 0 0 30px;
   height: 2px;
-  left: 0;
-  position: absolute;
-  top: 50%;
   width: 30px;
 }
 

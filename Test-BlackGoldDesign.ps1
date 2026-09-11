@@ -38,8 +38,8 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=45') {
-        $failures.Add("Missing Alpha After Dark design cache key v45: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=46') {
+        $failures.Add("Missing Alpha After Dark design cache key v46: $($item.Route)")
     }
     if ($html -notmatch 'script\.js\?v=13') {
         $failures.Add("Missing Alpha After Dark behavior cache key v13: $($item.Route)")
@@ -52,6 +52,10 @@ foreach ($item in $manifest) {
     if ($html -match 'PDF Download[^<]*(?:requires|Requires)|Adobe Acrobat Reader|get\.adobe\.com/reader') {
         $failures.Add("Obsolete Adobe Reader requirement remains: $($item.Route)")
     }
+}
+
+if ($styles -notmatch '\.alpha-after-dark__eyebrow::before,\s*\.alpha-after-dark__eyebrow::after' -or $styles -notmatch 'flex:\s*0 0 30px') {
+    $failures.Add('The homepage hero eyebrow is missing its symmetrical gold dashes.')
 }
 
 $careers = Get-Content -Raw -LiteralPath (Join-Path $root 'careers\index.html')
