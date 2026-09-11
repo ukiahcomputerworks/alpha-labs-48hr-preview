@@ -11,7 +11,6 @@ $manifestPath = Join-Path $resolvedRoot 'mirror-manifest.json'
 if (-not (Test-Path -LiteralPath $manifestPath -PathType Leaf)) {
     throw "Missing mirror manifest: $manifestPath"
 }
-
 $manifest = @(Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json)
 if ($manifest.Count -ne 35) {
     throw "Expected 35 public routes; found $($manifest.Count)."
@@ -29,10 +28,10 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="robots" content="noindex, nofollow">') {
         $failures.Add("Missing noindex on $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=46') {
+    if ($html -notmatch 'styles\.css\?v=47') {
         $failures.Add("Missing meeting override stylesheet on $($item.Route)")
     }
-    if ($html -notmatch 'script\.js\?v=13') {
+    if ($html -notmatch 'script\.js\?v=14') {
         $failures.Add("Missing meeting behavior script on $($item.Route)")
     }
 

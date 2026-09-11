@@ -140,77 +140,30 @@ try {
 
           for (const [buttonName, panelName, elap, phoneHref, streetNeedle] of locations) {
             await page.getByRole('button', { name: buttonName, exact: true }).click();
-            await page.waitForTimeout(430);
+            await page.waitForTimeout(40);
             const locatorState = await page.evaluate((expectedPanel) => {
               const heading = document.querySelector(`[data-location-panel="${expectedPanel}"] h3`);
               const panel = document.querySelector(`[data-location-panel="${expectedPanel}"]`);
-              const ledger = document.querySelector('[data-location-ledger]');
-              const uvInk = [...panel.querySelectorAll('.uv-ink')];
               return ({
                 activePins: document.querySelectorAll('.alpha-map-pin.is-active').length,
                 visiblePanels: [...document.querySelectorAll('[data-location-panel]')]
-                  .filter((candidate) => candidate.dataset.locationState === 'active')
-                  .map((panel) => panel.dataset.locationPanel),
-                placeholderHidden: document.querySelector('[data-location-placeholder]')?.getAttribute('aria-hidden') === 'true',
+                  .filter((candidate) => !candidate.hidden)
+                  .map((candidate) => candidate.dataset.locationPanel),
+                placeholderHidden: document.querySelector('[data-location-placeholder]')?.hidden,
                 headingFitsOneLine: Boolean(heading && heading.scrollWidth <= heading.clientWidth + 1 && getComputedStyle(heading).whiteSpace === 'nowrap'),
-                ledgerState: ledger?.dataset.locationState,
-                uvMode: ledger?.dataset.uvMode,
-                activePanelExposed: panel?.getAttribute('aria-hidden') === 'false' && !panel?.inert,
-                inactivePanelsProtected: [...document.querySelectorAll('[data-location-panel]')].filter((candidate) => candidate !== panel).every((candidate) => candidate.getAttribute('aria-hidden') === 'true' && candidate.inert),
-                uvInkCount: uvInk.length,
-                uvInkMasked: uvInk.every((ink) => getComputedStyle(ink).webkitMaskImage !== 'none'),
-                uvInkFullyVisible: uvInk.every((ink) => getComputedStyle(ink).webkitMaskImage === 'none'),
+                fullyReadable: Boolean(panel && getComputedStyle(panel.querySelector('.street-view-link')).visibility === 'visible' && getComputedStyle(panel.querySelector('.phone-link')).visibility === 'visible'),
                 elap: panel?.querySelector('.location-intelligence__status')?.textContent.match(/ELAP #\d+/)?.[0],
                 phoneHref: panel?.querySelector('.phone-link')?.getAttribute('href'),
                 streetHref: panel?.querySelector('.street-view-link')?.getAttribute('href'),
               });
             }, panelName);
 
-            if (locatorState.activePins !== 1 || locatorState.visiblePanels.length !== 1 || locatorState.visiblePanels[0] !== panelName || !locatorState.placeholderHidden || locatorState.ledgerState !== 'ready') {
+            if (locatorState.activePins !== 1 || locatorState.visiblePanels.length !== 1 || locatorState.visiblePanels[0] !== panelName || !locatorState.placeholderHidden) {
               failures.push(`${viewport.name} ${route}: ${buttonName} did not release only its matching location panel`);
             }
             if (!locatorState.headingFitsOneLine) failures.push(`${viewport.name} ${route}: ${buttonName} location heading does not fit on one line`);
-            if (!locatorState.activePanelExposed || !locatorState.inactivePanelsProtected || locatorState.uvInkCount !== 2) failures.push(`${viewport.name} ${route}: ${buttonName} panel accessibility state or UV field count is incorrect`);
+            if (!locatorState.fullyReadable) failures.push(`${viewport.name} ${route}: ${buttonName} contact details are not fully readable after selection`);
             if (locatorState.elap !== elap || locatorState.phoneHref !== phoneHref || !locatorState.streetHref?.includes(streetNeedle)) failures.push(`${viewport.name} ${route}: ${buttonName} verified contact data or destination changed`);
-            if (viewport.name === 'phone' && (locatorState.uvMode !== 'full' || !locatorState.uvInkFullyVisible)) failures.push(`${viewport.name} ${route}: ${buttonName} touch fallback did not fully reveal the docket`);
-            if (viewport.name !== 'phone' && !locatorState.uvInkMasked) failures.push(`${viewport.name} ${route}: ${buttonName} secret ink is not controlled by a CSS mask`);
-          }
-
-          if (viewport.name !== 'phone') {
-            await page.getByRole('button', { name: 'Ukiah', exact: true }).click();
-            await page.waitForTimeout(430);
-            const revealBox = await page.locator('[data-location-panel="ukiah"] .uv-reveal-area').boundingBox();
-            const scrollBeforeLamp = await page.evaluate(() => window.scrollY);
-            await page.mouse.move(revealBox.x + revealBox.width * .52, revealBox.y + revealBox.height * .52);
-            await page.waitForTimeout(80);
-            const lampState = await page.evaluate(() => {
-              const ledger = document.querySelector('[data-location-ledger]');
-              const panel = ledger.querySelector('[data-location-state="active"]');
-              const revealArea = panel.querySelector('.uv-reveal-area');
-              return {
-                active: ledger.classList.contains('is-uv-active'),
-                areaX: revealArea.style.getPropertyValue('--uv-area-x'),
-                areaY: revealArea.style.getPropertyValue('--uv-area-y'),
-                inkCoordinates: [...panel.querySelectorAll('.uv-ink')].every((ink) => ink.style.getPropertyValue('--uv-local-x') && ink.style.getPropertyValue('--uv-local-y')),
-                inkMaskApplied: [...panel.querySelectorAll('.uv-ink')].every((ink) => getComputedStyle(ink).webkitMaskImage.includes('radial-gradient')),
-                scrollY: window.scrollY,
-              };
-            });
-            if (!lampState.active || !lampState.areaX || !lampState.areaY || !lampState.inkCoordinates || !lampState.inkMaskApplied) failures.push(`${viewport.name} ${route}: pointer movement did not update the masked UV lamp coordinates`);
-            if (Math.abs(lampState.scrollY - scrollBeforeLamp) > 1) failures.push(`${viewport.name} ${route}: moving the UV lamp changed the page scroll position`);
-
-            const elkGroveButton = page.getByRole('button', { name: 'Elk Grove', exact: true });
-            await elkGroveButton.focus();
-            await elkGroveButton.press('Enter');
-            await page.waitForTimeout(430);
-            const keyboardState = await page.evaluate(() => {
-              const panel = document.querySelector('[data-location-panel="elk-grove"]');
-              return {
-                headingFocused: document.activeElement === panel.querySelector('h3'),
-                fullyReadable: [...panel.querySelectorAll('.uv-ink')].every((ink) => getComputedStyle(ink).webkitMaskImage === 'none'),
-              };
-            });
-            if (!keyboardState.headingFocused || !keyboardState.fullyReadable) failures.push(`${viewport.name} ${route}: keyboard selection did not focus and fully reveal the released dossier`);
           }
         }
 
@@ -316,31 +269,6 @@ try {
     }
 
     await page.close();
-  }
-
-  const reducedMotionPage = await browser.newPage({
-    viewport: { width: 1440, height: 1000 },
-    reducedMotion: 'reduce',
-  });
-  try {
-    await reducedMotionPage.goto(`${baseUrl}/contact-us-alpha-analytical-laboratories-inc/`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await reducedMotionPage.getByRole('button', { name: 'Ukiah', exact: true }).click();
-    await reducedMotionPage.waitForTimeout(80);
-    const reducedMotionState = await reducedMotionPage.evaluate(() => {
-      const ledger = document.querySelector('[data-location-ledger]');
-      const panel = document.querySelector('[data-location-panel="ukiah"]');
-      return {
-        ledgerState: ledger?.dataset.locationState,
-        uvMode: ledger?.dataset.uvMode,
-        scanAnimation: getComputedStyle(document.querySelector('.location-intelligence__scan')).animationName,
-        fullyReadable: [...panel.querySelectorAll('.uv-ink')].every((ink) => getComputedStyle(ink).webkitMaskImage === 'none'),
-      };
-    });
-    if (reducedMotionState.ledgerState !== 'ready' || reducedMotionState.uvMode !== 'full' || reducedMotionState.scanAnimation !== 'none' || !reducedMotionState.fullyReadable) {
-      failures.push(`reduced-motion /contact-us-alpha-analytical-laboratories-inc/: full-reveal fallback failed (${JSON.stringify(reducedMotionState)})`);
-    }
-  } finally {
-    await reducedMotionPage.close();
   }
 
   if (failures.length) {

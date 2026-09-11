@@ -38,11 +38,11 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=46') {
-        $failures.Add("Missing Alpha After Dark design cache key v46: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=47') {
+        $failures.Add("Missing Alpha After Dark design cache key v47: $($item.Route)")
     }
-    if ($html -notmatch 'script\.js\?v=13') {
-        $failures.Add("Missing Alpha After Dark behavior cache key v13: $($item.Route)")
+    if ($html -notmatch 'script\.js\?v=14') {
+        $failures.Add("Missing Alpha After Dark behavior cache key v14: $($item.Route)")
     }
     $contactNavPosition = $html.IndexOf('id="menu-item-170"')
     $regulatoryNavPosition = $html.IndexOf('id="menu-item-176"')
@@ -73,17 +73,14 @@ if ($contact -notmatch 'TIGERweb 2025 State_County geometry, STATE 06' -or $cont
 if ($styles -notmatch '\.california-map\s*\{[\s\S]*?transform:\s*scale\(1\.12\);' -or $styles -notmatch 'transform-origin:\s*center;') {
     $failures.Add('The California locator is missing its approved 12 percent proportional enlargement.')
 }
-if ($contact -notmatch 'data-location-ledger' -or $contact -notmatch 'location-intelligence__scan' -or @([regex]::Matches($contact, 'data-location-state="inactive" aria-hidden="true" inert')).Count -ne 6) {
-    $failures.Add('The six location dossiers are missing their explicit sealed, inactive, or scan states.')
+if (@([regex]::Matches($contact, 'data-location-panel="[^"]+"\s+hidden')).Count -ne 6 -or $contact -notmatch 'data-location-placeholder') {
+    $failures.Add('The clean six-location dossier switch or its sealed placeholder is incomplete.')
 }
-if (@([regex]::Matches($contact, 'class="uv-reveal-area"')).Count -ne 6 -or @([regex]::Matches($contact, 'class="[^"]*uv-ink[^"]*"')).Count -ne 12 -or @([regex]::Matches($contact, 'data-location-panel="[^"]+"[^>]*\shidden(?:\s|>)')).Count -ne 0) {
-    $failures.Add('The six UV reveal areas and their address and phone fields are incomplete, or obsolete hidden attributes remain.')
+if ($contact -match 'uv-reveal-area|uv-ink|location-intelligence__scan|data-uv-mode|data-location-ledger' -or $styles -match 'uv-reveal-area|uv-ink|location-intelligence__scan|alpha-docket-scan' -or $script -match 'updateUvPosition|is-uv-active|--uv-area-x') {
+    $failures.Add('The rejected UV spotlight implementation remains in the Alpha Labs contact experience.')
 }
-if ($styles -notmatch '-webkit-mask-image:\s*radial-gradient\(circle 126px at var\(--uv-local-x\) var\(--uv-local-y\)' -or $styles -notmatch 'circle 150px at var\(--uv-area-x\) var\(--uv-area-y\)' -or $styles -notmatch '@media \(hover: none\), \(pointer: coarse\)' -or $styles -notmatch '@media \(prefers-reduced-motion: reduce\)') {
-    $failures.Add('The pointer UV field or its touch and reduced-motion fallbacks are incomplete.')
-}
-if ($script -notmatch 'requestAnimationFrame\(updateUvPosition\)' -or $script -notmatch "--uv-area-x" -or $script -notmatch "closest\?\.\('\.uv-reveal-area'\)" -or $script -notmatch "panel\.inert = !isActive" -or $script -notmatch "focus\(\{ preventScroll: true \}\)") {
-    $failures.Add('The efficient UV tracking, inert panel state, or keyboard focus handoff is missing.')
+if ($script -notmatch 'panel\.hidden = panel\.dataset\.locationPanel !== selectedLocation' -or $script -notmatch 'locationPlaceholder\.hidden = true') {
+    $failures.Add('The immediate, fully readable location dossier behavior is missing.')
 }
 
 $regulatory = Get-Content -Raw -LiteralPath (Join-Path $root 'regulatory\index.html')
