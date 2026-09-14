@@ -2339,6 +2339,8 @@ input[type="submit"],
     transform: none;
   }
   .alpha-map-pin { font-size: .64rem !important; gap: .26rem; }
+  .alpha-map-pin { pointer-events: none; }
+  .alpha-map-pin > span { pointer-events: auto; }
   .alpha-map-pin > span:last-child { padding: .3rem .34rem; }
   .alpha-map-pin--petaluma > span:last-child {
     left: auto;
