@@ -38,8 +38,8 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=47') {
-        $failures.Add("Missing Alpha After Dark design cache key v47: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=48') {
+        $failures.Add("Missing Alpha After Dark design cache key v48: $($item.Route)")
     }
     if ($html -notmatch 'script\.js\?v=14') {
         $failures.Add("Missing Alpha After Dark behavior cache key v14: $($item.Route)")
@@ -56,6 +56,9 @@ foreach ($item in $manifest) {
 
 if ($styles -notmatch '\.alpha-after-dark__eyebrow::before,\s*\.alpha-after-dark__eyebrow::after' -or $styles -notmatch 'flex:\s*0 0 30px') {
     $failures.Add('The homepage hero eyebrow is missing its symmetrical gold dashes.')
+}
+if ($styles -notmatch 'table\.locations \.phone-link\s*\{\s*border-bottom:\s*0;\s*\}') {
+    $failures.Add('The uneven bottom dash remains beneath Company Locations phone links.')
 }
 
 $careers = Get-Content -Raw -LiteralPath (Join-Path $root 'careers\index.html')

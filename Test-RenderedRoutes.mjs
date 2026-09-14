@@ -65,6 +65,18 @@ try {
         if (route === '/' && !state.heroLogoVisible) failures.push(`${viewport.name} ${route}: home hero logo is not visible`);
         if (state.visibleStreetViewLabels) failures.push(`${viewport.name} ${route}: standalone Street View label remains`);
 
+        const footerPhoneState = await page.evaluate(() => {
+          const links = [...document.querySelectorAll('table.locations .phone-link')];
+          return {
+            count: links.length,
+            allCallable: links.every((link) => link.getAttribute('href')?.startsWith('tel:+1')),
+            noBottomDash: links.every((link) => getComputedStyle(link).borderBottomWidth === '0px'),
+          };
+        });
+        if (footerPhoneState.count && (footerPhoneState.count !== 6 || !footerPhoneState.allCallable || !footerPhoneState.noBottomDash)) {
+          failures.push(`${viewport.name} ${route}: Company Locations phone links lost their call targets or still show the uneven bottom dash`);
+        }
+
         if (route === '/') {
           const homeStoryState = await page.evaluate(() => {
             const hero = document.querySelector('.alpha-after-dark');

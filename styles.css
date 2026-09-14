@@ -973,6 +973,7 @@ table.locations td:nth-child(3) :is(.street-view-link, .street-view-link > span)
 table.locations td:nth-child(4) :is(.street-view-link, .street-view-link > span) { animation-delay: -1.6s; }
 table.locations td:nth-child(5) :is(.street-view-link, .street-view-link > span) { animation-delay: -4.5s; }
 table.locations td:nth-child(6) :is(.street-view-link, .street-view-link > span) { animation-delay: -2.9s; }
+table.locations .phone-link { border-bottom: 0; }
 .location-directory {
   display: flex;
   flex-wrap: wrap;
