@@ -749,6 +749,12 @@ hr, .wp-block-separator { border-color: var(--alpha-line) !important; }
 .entry-title { margin: 0 !important; }
 /* This long service title stays on one line inside its own content column. */
 body.page-id-9 .entry-header { container-type: inline-size; }
+body.page-id-77 .entry-header { container-type: inline-size; }
+body.page-id-77 .entry-title {
+  font-size: clamp(.75rem, 4vw, 4.2rem) !important;
+  font-size: clamp(.75rem, 5cqi, 4.2rem) !important;
+}
+body.page-id-77 .entry-title span { display: block; white-space: nowrap; }
 body:is(.page-id-49, .page-id-79, .page-id-112) .entry-header { container-type: inline-size; }
 body:is(.page-id-49, .page-id-79, .page-id-112) .entry-title {
   font-size: clamp(1rem, 3.2vw, 3.2rem) !important;
@@ -799,7 +805,7 @@ body.page-id-9 .entry-title {
 .entry-content li::marker { color: var(--alpha-gold); }
 
 /* Homepage story: preserve title scale, add gold focus, improve reading comfort. */
-body:is(.page-id-79, .page-id-112) .entry-title,
+body:is(.page-id-77, .page-id-79, .page-id-112) .entry-title,
 body.home .entry-content > h1,
 body.home .entry-content > h2,
 body.page-id-49 .entry-title,
@@ -822,7 +828,7 @@ body.page-id-9 .entry-title {
 }
 @media (prefers-reduced-motion: reduce) {
   body.page-id-9 .entry-title,
-  body:is(.page-id-49, .page-id-79, .page-id-112) .entry-title { animation: none; background-position: 50% center; }
+  body:is(.page-id-49, .page-id-77, .page-id-79, .page-id-112) .entry-title { animation: none; background-position: 50% center; }
 }
 body.home .entry-content > p,
 body.home .entry-content li {
