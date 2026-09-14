@@ -1092,7 +1092,7 @@ table.locations .phone-link { border-bottom: 0; }
   margin: 0;
   text-transform: uppercase;
 }
-.alpha-location-room__intro {
+#alpha-location-room-title + .alpha-location-room__intro {
   color: #fff !important;
   margin: 1rem 0 2.25rem;
   max-width: 700px;
