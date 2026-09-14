@@ -553,6 +553,23 @@ body {
 }
 ::selection { background: var(--alpha-gold); color: var(--alpha-black); }
 img { height: auto; max-width: 100%; }
+/* Service sheets preserve their authored width; only their viewport scrolls. */
+.service-sheet-scroll {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-color: #d4af37 #171717;
+  margin-bottom: 1.5rem;
+}
+.entry-content .service-sheet-scroll > .program-work-img {
+  max-width: none !important;
+  height: auto !important;
+  display: block;
+  margin: 0;
+}
+.service-sheet-scroll:focus-visible { outline: 2px solid #d4af37; outline-offset: 4px; }
+.entry-content .service-sheet-hint { color: #fff; font-size: .95rem; margin-bottom: .5rem; }
 a {
   color: var(--alpha-gold-bright);
   text-decoration-color: rgba(243, 207, 90, 0.52);
