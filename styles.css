@@ -805,6 +805,8 @@ body.page-id-9 .entry-title {
 .entry-content li::marker { color: var(--alpha-gold); }
 
 /* Homepage story: preserve title scale, add gold focus, improve reading comfort. */
+body.page-id-32 .entry-title,
+body.page-id-32 .entry-content > h2,
 body:is(.page-id-77, .page-id-79, .page-id-112) .entry-title,
 body.home .entry-content > h1,
 body.home .entry-content > h2,
@@ -827,15 +829,20 @@ body.page-id-9 .entry-title {
   color: var(--alpha-gold-bright) !important;
 }
 @media (prefers-reduced-motion: reduce) {
+  body.page-id-32 .entry-title,
+  body.page-id-32 .entry-content > h2,
   body.page-id-9 .entry-title,
   body:is(.page-id-49, .page-id-77, .page-id-79, .page-id-112) .entry-title { animation: none; background-position: 50% center; }
 }
+body.page-id-32 .entry-content > p,
+body.page-id-32 .entry-content li,
 body.home .entry-content > p,
 body.home .entry-content li {
   color: #fff !important;
   font-size: 1.125rem !important;
   line-height: 1.72;
 }
+body.page-id-32 .entry-content strong,
 body.home .entry-content strong,
 body.home .entry-content b { color: #fff !important; }
 
