@@ -38,8 +38,8 @@ foreach ($item in $manifest) {
     if ($html -notmatch '<meta name="viewport" content="width=device-width, initial-scale=1"') {
         $failures.Add("Missing responsive viewport: $($item.Route)")
     }
-    if ($html -notmatch 'styles\.css\?v=56') {
-        $failures.Add("Missing Alpha After Dark design cache key v56: $($item.Route)")
+    if ($html -notmatch 'styles\.css\?v=57') {
+        $failures.Add("Missing Alpha After Dark design cache key v57: $($item.Route)")
     }
     if ($html -notmatch 'script\.js\?v=15') {
         $failures.Add("Missing Alpha After Dark behavior cache key v14: $($item.Route)")

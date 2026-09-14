@@ -17,10 +17,12 @@ try {
           const img=el.querySelector('img');
           const expected=Number(img.getAttribute('width'))||img.naturalWidth;
           el.scrollLeft=el.scrollWidth;
-          return {expected,actual:img.getBoundingClientRect().width,overflow:el.scrollWidth>el.clientWidth,scrolled:el.scrollLeft>0,pageOverflow:document.documentElement.scrollWidth>innerWidth};
+          const rect=el.getBoundingClientRect();
+          return {expected,actual:img.getBoundingClientRect().width,contained:rect.left>=0 && rect.right<=innerWidth,overflow:el.scrollWidth>el.clientWidth,scrolled:el.scrollLeft>0,pageOverflow:document.documentElement.scrollWidth>innerWidth};
         });
         assert.ok(Math.abs(result.expected-result.actual)<=2,JSON.stringify(result));
         assert.equal(result.pageOverflow,false);
+        assert.equal(result.contained,true,JSON.stringify(result));
         if(width===390) assert.ok(result.overflow && result.scrolled);
         if(result.overflow) {
           await sheet.evaluate(el=>el.scrollLeft=0);

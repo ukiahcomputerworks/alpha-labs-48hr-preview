@@ -554,6 +554,7 @@ body {
 ::selection { background: var(--alpha-gold); color: var(--alpha-black); }
 img { height: auto; max-width: 100%; }
 /* Service sheets preserve their authored width; only their viewport scrolls. */
+.service-listing .content { width: 100% !important; max-width: 100%; }
 .service-sheet-scroll {
   max-width: 100%;
   min-width: 0;
