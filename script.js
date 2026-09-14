@@ -1,3 +1,25 @@
+// Resource anchors reveal the right folder when arriving from a service page.
+if (document.querySelector('.client-kit')) {
+  const revealResource = () => {
+    let id;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+    const target = document.getElementById(id);
+    if (!target || !target.closest('.client-kit')) return;
+    const folder = target.matches('details') ? target : target.closest('details');
+    if (folder) folder.open = true;
+    requestAnimationFrame(() => target.scrollIntoView({ block: 'start', behavior: 'auto' }));
+  };
+  window.addEventListener('hashchange', revealResource);
+  document.querySelector('.client-kit').addEventListener('click', (event) => {
+    const link = event.target.closest('a[href^="#"]');
+    if (link && link.hash === location.hash) {
+      event.preventDefault();
+      revealResource();
+    }
+  });
+  revealResource();
+}
+
 document.addEventListener('submit', (event) => {
   event.preventDefault();
 });
