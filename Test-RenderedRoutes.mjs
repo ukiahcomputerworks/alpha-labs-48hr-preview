@@ -184,11 +184,14 @@ try {
             const titleElement = document.querySelector('.entry-title');
             const titleStyle = titleElement && getComputedStyle(titleElement);
             const headings = [...document.querySelectorAll('.entry-content h2')];
+            const sectionStyle = headings[0] && getComputedStyle(headings[0]);
             const watertrax = document.querySelector('.entry-content blockquote a');
             const email = document.querySelector('.entry-content a[href="mailto:robbie@alpha-labs.com"]');
             return {
               title: titleElement?.textContent.trim(),
               titleFitsOneLine: Boolean(titleElement && titleStyle && titleElement.scrollWidth <= titleElement.clientWidth + 1 && titleElement.clientHeight <= parseFloat(titleStyle.lineHeight) + 2 && titleStyle.whiteSpace === 'nowrap'),
+              titleLargerThanSections: Boolean(titleStyle && sectionStyle && parseFloat(titleStyle.fontSize) > parseFloat(sectionStyle.fontSize)),
+              titleShimmersGold: Boolean(titleStyle && titleStyle.backgroundClip === 'text' && titleStyle.animationName.includes('alpha-contact-link-shimmer')),
               linkedServices: headings.length === 4 && headings.every((heading) => heading.querySelector('a[href]')),
               watertraxHref: watertrax?.href,
               emailHref: email?.getAttribute('href'),
@@ -199,6 +202,8 @@ try {
             failures.push(`${viewport.name} ${route}: approved service copy or direct actions are incomplete`);
           }
           if (!servicesState.titleFitsOneLine) failures.push(`${viewport.name} ${route}: service title does not fit on one line`);
+          if (viewport.name !== 'phone' && !servicesState.titleLargerThanSections) failures.push(`${viewport.name} ${route}: service title is not larger than section titles`);
+          if (!servicesState.titleShimmersGold) failures.push(`${viewport.name} ${route}: service title is missing its gold shimmer`);
         }
 
         if (route === '/regulatory/') {

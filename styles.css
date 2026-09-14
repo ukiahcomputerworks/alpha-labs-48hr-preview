@@ -750,8 +750,8 @@ hr, .wp-block-separator { border-color: var(--alpha-line) !important; }
 /* This long service title stays on one line inside its own content column. */
 body.page-id-9 .entry-header { container-type: inline-size; }
 body.page-id-9 .entry-title {
-  font-size: clamp(.875rem, 2.7vw, 3rem) !important;
-  font-size: clamp(.875rem, 5cqi, 3rem) !important;
+  font-size: clamp(.875rem, 3.1vw, 3rem) !important;
+  font-size: clamp(.875rem, 6cqi, 3rem) !important;
   white-space: nowrap;
 }
 .entry-content, .entry-content p, .entry-content li,
@@ -779,7 +779,8 @@ body.page-id-9 .entry-title {
 
 /* Homepage story: preserve title scale, add gold focus, improve reading comfort. */
 body.home .entry-content > h1,
-body.home .entry-content > h2 {
+body.home .entry-content > h2,
+body.page-id-9 .entry-title {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: alpha-contact-link-shimmer 5.8s ease-in-out infinite;
@@ -795,6 +796,9 @@ body.home .entry-content > h2 {
   background-position: 115% center;
   background-size: 240% 100%;
   color: var(--alpha-gold-bright) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.page-id-9 .entry-title { animation: none; background-position: 50% center; }
 }
 body.home .entry-content > p,
 body.home .entry-content li {
