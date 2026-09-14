@@ -86,6 +86,17 @@ if ($script -notmatch 'panel\.hidden = panel\.dataset\.locationPanel !== selecte
     $failures.Add('The immediate, fully readable location dossier behavior is missing.')
 }
 
+$services = Get-Content -Raw -LiteralPath (Join-Path $root 'services-listing\index.html')
+foreach ($serviceMarker in @('Our Testing &amp; Analytical Services', 'Certified environmental testing for Northern California.', 'Drinking &amp; Bottled Water', 'Wastewater, Recycled &amp; Storm Water', 'POTW Pretreatment Programs', 'Soil, Sediment &amp; Hazardous Waste', 'Title 21, Title 22, and Disinfectant By-Product compliance analyses', 'California Toxics Rule (CTR)', 'POTW Discharge Permits', '24-hour auto-sampler installations', 'Full SW846 testing', 'UST compliance', 'trout survival bioassays', 'WaterTrax Partner:')) {
+    if (-not $services.Contains($serviceMarker)) { $failures.Add("Missing approved Services Listing copy: $serviceMarker") }
+}
+foreach ($serviceTarget in @('drinking-bottled-water-program/', 'wastewater-recycled-water-storm-water-ground-water-program-work/', 'potw-pretreatment-program-work/', 'soil-sludge-sediment-haz-waste-characterization/')) {
+    if (-not $services.Contains("alpha-labs-48hr-preview/$serviceTarget")) { $failures.Add("Missing Services Listing destination: $serviceTarget") }
+}
+if ($services -notmatch 'mailto:robbie@alpha-labs\.com' -or $services -notmatch 'https://aquaticinformatics\.com/products/wastewater-compliance-software/' -or $services -match 'Read More&#8230;') {
+    $failures.Add('The Services Listing actions, official WaterTrax destination, or redundant Read More cleanup are incomplete.')
+}
+
 $regulatory = Get-Content -Raw -LiteralPath (Join-Path $root 'regulatory\index.html')
 if ($regulatory -notmatch 'data-agency-vault' -or @([regex]::Matches($regulatory, 'data-agency-target=')).Count -ne 6 -or @([regex]::Matches($regulatory, 'data-agency-panel=')).Count -ne 6) {
     $failures.Add('The six-agency regulatory vault interaction is incomplete.')

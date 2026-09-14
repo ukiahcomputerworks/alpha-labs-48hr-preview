@@ -179,6 +179,24 @@ try {
           }
         }
 
+        if (route === '/services-listing/') {
+          const servicesState = await page.evaluate(() => {
+            const headings = [...document.querySelectorAll('.entry-content h2')];
+            const watertrax = document.querySelector('.entry-content blockquote a');
+            const email = document.querySelector('.entry-content a[href="mailto:robbie@alpha-labs.com"]');
+            return {
+              title: document.querySelector('.entry-title')?.textContent.trim(),
+              linkedServices: headings.length === 4 && headings.every((heading) => heading.querySelector('a[href]')),
+              watertraxHref: watertrax?.href,
+              emailHref: email?.getAttribute('href'),
+              oldReadMore: document.querySelector('.entry-content')?.textContent.includes('Read More'),
+            };
+          });
+          if (servicesState.title !== 'Our Testing & Analytical Services' || !servicesState.linkedServices || servicesState.watertraxHref !== 'https://aquaticinformatics.com/products/wastewater-compliance-software/' || servicesState.emailHref !== 'mailto:robbie@alpha-labs.com' || servicesState.oldReadMore) {
+            failures.push(`${viewport.name} ${route}: approved service copy or direct actions are incomplete`);
+          }
+        }
+
         if (route === '/regulatory/') {
           const agencies = ['epa', 'drinking-water', 'calrecycle', 'water-board', 'dtsc', 'carb'];
           const initialPlaceholderVisible = await page.locator('[data-agency-placeholder]').isVisible();
