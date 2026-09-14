@@ -749,6 +749,19 @@ hr, .wp-block-separator { border-color: var(--alpha-line) !important; }
 .entry-title { margin: 0 !important; }
 /* This long service title stays on one line inside its own content column. */
 body.page-id-9 .entry-header { container-type: inline-size; }
+body.page-id-49 .entry-header { container-type: inline-size; }
+body.page-id-49 .entry-title {
+  font-size: clamp(1rem, 3.2vw, 3.2rem) !important;
+  font-size: clamp(1rem, 4.5cqi, 3.2rem) !important;
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  body.page-id-49 .entry-title {
+    font-size: clamp(1rem, 5vw, 2rem) !important;
+    font-size: clamp(1rem, 6.8cqi, 2rem) !important;
+  }
+  body.page-id-49 .entry-title span { display: block; }
+}
 body.page-id-9 .entry-title {
   font-size: clamp(.875rem, 3.1vw, 3rem) !important;
   font-size: clamp(.875rem, 6cqi, 3rem) !important;
@@ -780,6 +793,7 @@ body.page-id-9 .entry-title {
 /* Homepage story: preserve title scale, add gold focus, improve reading comfort. */
 body.home .entry-content > h1,
 body.home .entry-content > h2,
+body.page-id-49 .entry-title,
 body.page-id-9 .entry-title {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -798,7 +812,8 @@ body.page-id-9 .entry-title {
   color: var(--alpha-gold-bright) !important;
 }
 @media (prefers-reduced-motion: reduce) {
-  body.page-id-9 .entry-title { animation: none; background-position: 50% center; }
+  body.page-id-9 .entry-title,
+  body.page-id-49 .entry-title { animation: none; background-position: 50% center; }
 }
 body.home .entry-content > p,
 body.home .entry-content li {
