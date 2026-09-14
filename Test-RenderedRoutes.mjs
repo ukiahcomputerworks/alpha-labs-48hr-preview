@@ -181,11 +181,14 @@ try {
 
         if (route === '/services-listing/') {
           const servicesState = await page.evaluate(() => {
+            const titleElement = document.querySelector('.entry-title');
+            const titleStyle = titleElement && getComputedStyle(titleElement);
             const headings = [...document.querySelectorAll('.entry-content h2')];
             const watertrax = document.querySelector('.entry-content blockquote a');
             const email = document.querySelector('.entry-content a[href="mailto:robbie@alpha-labs.com"]');
             return {
-              title: document.querySelector('.entry-title')?.textContent.trim(),
+              title: titleElement?.textContent.trim(),
+              titleFitsOneLine: Boolean(titleElement && titleStyle && titleElement.scrollWidth <= titleElement.clientWidth + 1 && titleElement.clientHeight <= parseFloat(titleStyle.lineHeight) + 2 && titleStyle.whiteSpace === 'nowrap'),
               linkedServices: headings.length === 4 && headings.every((heading) => heading.querySelector('a[href]')),
               watertraxHref: watertrax?.href,
               emailHref: email?.getAttribute('href'),
@@ -195,6 +198,7 @@ try {
           if (servicesState.title !== 'Our Testing & Analytical Services' || !servicesState.linkedServices || servicesState.watertraxHref !== 'https://aquaticinformatics.com/products/wastewater-compliance-software/' || servicesState.emailHref !== 'mailto:robbie@alpha-labs.com' || servicesState.oldReadMore) {
             failures.push(`${viewport.name} ${route}: approved service copy or direct actions are incomplete`);
           }
+          if (!servicesState.titleFitsOneLine) failures.push(`${viewport.name} ${route}: service title does not fit on one line`);
         }
 
         if (route === '/regulatory/') {

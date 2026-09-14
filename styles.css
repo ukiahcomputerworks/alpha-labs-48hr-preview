@@ -747,6 +747,13 @@ hr, .wp-block-separator { border-color: var(--alpha-line) !important; }
   transform: translateY(50%);
 }
 .entry-title { margin: 0 !important; }
+/* This long service title stays on one line inside its own content column. */
+body.page-id-9 .entry-header { container-type: inline-size; }
+body.page-id-9 .entry-title {
+  font-size: clamp(.875rem, 2.7vw, 3rem) !important;
+  font-size: clamp(.875rem, 5cqi, 3rem) !important;
+  white-space: nowrap;
+}
 .entry-content, .entry-content p, .entry-content li,
 .textwidget, .widget p { color: var(--alpha-muted) !important; }
 .entry-content > p:first-of-type { color: var(--alpha-ivory) !important; font-size: 1.05rem; }
