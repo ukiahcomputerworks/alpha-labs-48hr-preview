@@ -823,6 +823,7 @@ body.page-id-9 .entry-title {
 .entry-content li::marker { color: var(--alpha-gold); }
 
 /* Homepage story: preserve title scale, add gold focus, improve reading comfort. */
+#alpha-location-room-title,
 body.page-id-21 .entry-title,
 body.page-id-21 .client-kit h2,
 body.page-id-32 .entry-title,
@@ -849,6 +850,7 @@ body.page-id-9 .entry-title {
   color: var(--alpha-gold-bright) !important;
 }
 @media (prefers-reduced-motion: reduce) {
+  #alpha-location-room-title,
   body.page-id-21 .entry-title,
   body.page-id-21 .client-kit h2,
   body.page-id-32 .entry-title,
@@ -1091,7 +1093,7 @@ table.locations .phone-link { border-bottom: 0; }
   text-transform: uppercase;
 }
 .alpha-location-room__intro {
-  color: var(--alpha-muted) !important;
+  color: #fff !important;
   margin: 1rem 0 2.25rem;
   max-width: 700px;
 }
