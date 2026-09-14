@@ -749,18 +749,26 @@ hr, .wp-block-separator { border-color: var(--alpha-line) !important; }
 .entry-title { margin: 0 !important; }
 /* This long service title stays on one line inside its own content column. */
 body.page-id-9 .entry-header { container-type: inline-size; }
-body.page-id-49 .entry-header { container-type: inline-size; }
-body.page-id-49 .entry-title {
+body:is(.page-id-49, .page-id-79, .page-id-112) .entry-header { container-type: inline-size; }
+body:is(.page-id-49, .page-id-79, .page-id-112) .entry-title {
   font-size: clamp(1rem, 3.2vw, 3.2rem) !important;
   font-size: clamp(1rem, 4.5cqi, 3.2rem) !important;
   white-space: nowrap;
 }
+body.page-id-79 .entry-title {
+  font-size: clamp(.875rem, 2.2vw, 2.5rem) !important;
+  font-size: clamp(.875rem, 3.2cqi, 2.5rem) !important;
+}
 @media (max-width: 600px) {
-  body.page-id-49 .entry-title {
+  body:is(.page-id-49, .page-id-112) .entry-title {
     font-size: clamp(1rem, 5vw, 2rem) !important;
     font-size: clamp(1rem, 6.8cqi, 2rem) !important;
   }
-  body.page-id-49 .entry-title span { display: block; }
+  body.page-id-79 .entry-title {
+    font-size: clamp(.875rem, 4vw, 1.8rem) !important;
+    font-size: clamp(.875rem, 5.2cqi, 1.8rem) !important;
+  }
+  body:is(.page-id-49, .page-id-79, .page-id-112) .entry-title span { display: block; }
 }
 body.page-id-9 .entry-title {
   font-size: clamp(.875rem, 3.1vw, 3rem) !important;
@@ -791,6 +799,7 @@ body.page-id-9 .entry-title {
 .entry-content li::marker { color: var(--alpha-gold); }
 
 /* Homepage story: preserve title scale, add gold focus, improve reading comfort. */
+body:is(.page-id-79, .page-id-112) .entry-title,
 body.home .entry-content > h1,
 body.home .entry-content > h2,
 body.page-id-49 .entry-title,
@@ -813,7 +822,7 @@ body.page-id-9 .entry-title {
 }
 @media (prefers-reduced-motion: reduce) {
   body.page-id-9 .entry-title,
-  body.page-id-49 .entry-title { animation: none; background-position: 50% center; }
+  body:is(.page-id-49, .page-id-79, .page-id-112) .entry-title { animation: none; background-position: 50% center; }
 }
 body.home .entry-content > p,
 body.home .entry-content li {
